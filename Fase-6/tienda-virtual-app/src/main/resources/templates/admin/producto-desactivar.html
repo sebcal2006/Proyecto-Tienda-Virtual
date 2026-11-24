@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Desactivar producto')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('productos')}"></aside>
+<main class="content">
+    <div class="card warn narrow-form">
+        <h1>¿Desactivar <span th:text="${product.name}"></span>?</h1>
+        <p>Este producto está en <b th:text="${uses}">1</b> carrito(s) o pedido(s) que aún no salen.
+            Si lo desactiva, deja de venderse en ambos canales y esas compras no podrán confirmarse con él.</p>
+        <div class="row">
+            <form th:action="@{/admin/productos/{id}/desactivar(id=${product.id})}" method="post">
+                <input type="hidden" name="confirmed" value="true">
+                <button class="btn danger">Sí, desactivar</button>
+            </form>
+            <a class="btn ghost" th:href="@{/admin/productos}">Cancelar</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

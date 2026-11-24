@@ -4,20 +4,23 @@ Aplicación web del Sistema de Gestión de Ventas, construida sobre el modelo PO
 
 **Tecnologías:** Java 17+, Spring Boot 3.5 (Web, Data JPA, Security, Validation), Thymeleaf y MySQL 8.
 
-## Flujos incluidos
+## Funcionalidades (MVP de la Fase 1)
 
-| Flujo | Rol | Requisitos |
+El programa cubre las 30 historias **Must** de la priorización de la Fase 1 (sección 2.15 del documento), con un flujo completo para cada uno de los 6 roles, y además varias historias **Should**.
+
+| Rol | Módulo | Historias |
 |---|---|---|
-| Inicio de sesión por rol, cierre de sesión, cuenta inactiva | Todos | RF-001, RF-002, RF-003, RNF-002 |
-| Registro de cliente en línea | Visitante | RF-004 |
-| Catálogo, búsqueda, filtro por categoría y detalle | Visitante / Cliente | RF-008, RF-009, RF-010 |
-| Carrito: agregar, cambiar cantidad, quitar | Cliente | RF-023, RF-024, RF-025 |
-| Compra en línea con dirección y pago (pasarela simulada, con opción de rechazo y reintento) | Cliente | RF-026, RF-027, RF-032, RF-033 |
-| Mis pedidos y seguimiento | Cliente | RF-034, RF-040 |
-| Venta presencial o telefónica (buscar/registrar cliente, agregar productos, confirmar) | Vendedor | RF-015, RF-016, RF-018 a RF-022 |
-| Consulta de pedidos con filtros, detalle, cambio de estado y cancelación | Vendedor (gestiona) / Administrador (consulta) | RF-028 a RF-031 |
+| Todos | Inicio de sesión por rol, cuenta inactiva, cierre de sesión | HU01 |
+| Administrador | Panel con indicadores; usuarios y roles; productos (crear, modificar, desactivar con advertencia) | HU02, HU03, HU05, HU06, HU07 |
+| Cliente | Registro, catálogo con búsqueda y filtro, carrito, compra con dirección y pago simulado (rechazo y reintento), seguimiento e historial | HU04, HU08, HU09, HU23 a HU27, HU32, HU33, HU34, HU39, HU40 |
+| Encargado de inventario | Existencias, alerta de reposición, entradas, salidas e historial por producto | HU11, HU12, HU13, HU14 |
+| Vendedor | Venta presencial (cliente por documento, productos, cantidades, total), pedidos con filtros, cambio de estado, cancelación y asignación de domiciliario | HU15, HU16, HU18 a HU22, HU28, HU30, HU31, HU35 |
+| Domiciliario | Sus entregas, marcar en camino, confirmar entrega o registrar incidencia | HU36, HU37, HU38 |
+| Encargado de facturación | Pedidos por facturar, factura con número único e IVA 19 %, consulta e impresión en PDF | HU41, HU42 |
 
-Reglas de negocio aplicadas en `OrderService` y `CartService`: RN-001 (carrito no vacío), RN-002 (existencia), RN-003 (cancelación solo en Pendiente o En preparación), RN-004 (orden de estados), RN-005 (descuenta inventario al confirmar y lo devuelve al cancelar, con movimientos ENTRY/EXIT), RN-008 (total = cantidad × precio) y RNF-008 (bloqueo de fila del producto para que dos ventas no tomen la misma unidad).
+Reglas de negocio aplicadas en los servicios: RN-001 (carrito no vacío), RN-002 (existencia), RN-003 (cancelación solo en Pendiente o En preparación), RN-004 (orden de estados), RN-005 (descuenta inventario al confirmar y lo devuelve al cancelar, con movimientos ENTRY/EXIT), RN-008 (total = cantidad × precio) y RNF-008 (bloqueo de fila del producto para que dos ventas no tomen la misma unidad). RNF-002: cada rol solo entra a sus módulos; el administrador consulta inventario y facturas sin modificarlos.
+
+**Flujo de un pedido en línea:** el cliente compra → el vendedor lo pasa a *En preparación* (requiere pago aprobado) y asigna un domiciliario → el domiciliario lo marca *En camino* y confirma la entrega → el encargado de facturación genera la factura.
 
 ## Cómo ejecutarla (Windows, PowerShell)
 
@@ -44,17 +47,23 @@ Los datos de la Fase 4 traen contraseñas de ejemplo. Al arrancar, la aplicació
 |---|---|---|
 | admin@tienda.com | Tienda123 | Administrador (y vendedor) |
 | vendedor@tienda.com | Tienda123 | Vendedor |
+| inventario@tienda.com | Tienda123 | Encargado de inventario |
+| facturacion@tienda.com | Tienda123 | Encargado de facturación |
+| domiciliario@tienda.com | Tienda123 | Domiciliario |
 | laura.gomez@correo.com | Cliente123 | Cliente |
 | ana.torres@correo.com | Cliente123 | Cliente |
 | inactivo@tienda.com | Tienda123 | Cuenta inactiva (debe ser rechazada) |
 
 ## Guion corto de prueba
 
-1. Entrar como **laura.gomez@correo.com**, agregar dos productos al carrito, confirmar la compra con una dirección y ver el pedido en *Mis pedidos*.
-2. Repetir marcando *Simular pago rechazado* y luego reintentar el pago desde el detalle del pedido.
-3. Entrar como **vendedor@tienda.com**, registrar una venta presencial (buscar el documento `1012345678` o registrar un cliente nuevo), confirmarla y avanzar su estado.
-4. Cancelar un pedido pendiente y comprobar en MySQL que la existencia volvió: `SELECT code, stock FROM products;` y `SELECT * FROM inventory_movements ORDER BY id DESC;`.
-5. Entrar como **admin@tienda.com** y revisar el listado de pedidos con los filtros.
+1. **Cliente** (`laura.gomez@correo.com`): agregar productos al carrito, confirmar la compra con una dirección y ver el pedido en *Mis pedidos*. Repetir marcando *Simular pago rechazado* y reintentar el pago.
+2. **Vendedor** (`vendedor@tienda.com`): registrar una venta presencial con el documento `1012345678`. Abrir el pedido en línea, pasarlo a *En preparación* y asignar a Diego Domiciliario.
+3. **Domiciliario** (`domiciliario@tienda.com`): marcar el pedido *En camino* y confirmar la entrega (o registrar una incidencia).
+4. **Facturación** (`facturacion@tienda.com`): generar la factura del pedido entregado e imprimirla como PDF.
+5. **Inventario** (`inventario@tienda.com`): registrar una entrada y una salida y revisar el historial del producto.
+6. **Administrador** (`admin@tienda.com`): revisar el panel, crear un usuario con un rol, crear un producto (entra con existencia 0) y desactivarlo.
+
+Para volver a los datos iniciales se ejecuta de nuevo `Fase-4/database/tienda_virtual.sql`.
 
 ## Estructura
 
@@ -64,7 +73,7 @@ src/main/java/co/edu/sena/tiendavirtual/
 ├── repository/   Spring Data JPA
 ├── service/      Reglas de negocio (pedidos, carrito, clientes)
 ├── config/       Seguridad por roles y contraseñas de prueba
-└── web/          Controladores
+└── web/          Controladores por módulo (cliente, vendedor, admin, inventario, domicilios, facturación)
 src/main/resources/templates/   Vistas Thymeleaf
 src/test/java/                  Pruebas unitarias (JUnit 5 + Mockito)
 ```

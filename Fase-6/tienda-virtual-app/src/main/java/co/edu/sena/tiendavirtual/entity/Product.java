@@ -74,4 +74,10 @@ public class Product {
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
     public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+    public void setCategory(Category category) { this.category = category; }
+    public void setCode(String code) { this.code = code; }
+    public void setName(String name) { this.name = name; }
+    public void setDescription(String description) { this.description = description; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 }

@@ -123,10 +123,39 @@ dd { margin: 0; }
 td { white-space: nowrap; }
 td:first-child, .timeline li, dd { white-space: normal; }
 .price, .total { white-space: nowrap; }
-@media (max-width: 1100px) { .content .two-col { grid-template-columns: 1fr; } }
+@media (max-width: 1250px) { .content .two-col { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
     .container, .content { padding: 1rem; }
     .topbar { padding: .8rem 1rem; }
     .actions { flex-direction: column-reverse; }
     .actions .btn { width: 100%; }
 }
+
+/* Módulos del personal */
+.sidebar .group { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #64748B; margin: .8rem .7rem .2rem; }
+.title-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.title-row h1, .title-row h2 { margin: 0 0 1rem; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.kpi { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; color: var(--ink); }
+.kpi:hover { text-decoration: none; border-color: var(--blue); }
+.kpi span { color: var(--slate); font-size: .85rem; }
+.kpi b { font-size: 1.6rem; margin: .2rem 0; white-space: nowrap; }
+.kpi small { color: var(--slate); }
+.narrow-form { max-width: 620px; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: .6rem .9rem; display: flex; flex-direction: column; gap: .4rem; }
+legend { font-weight: 600; padding: 0 .3rem; }
+td .badge + .badge { margin-left: .25rem; }
+td.row { gap: .8rem; }
+.grid.wide { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); margin-bottom: 1rem; }
+.invoice-head { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: .8rem; margin-bottom: 1rem; }
+.invoice-title { font-size: 1.3rem; margin: 0; display: block; }
+.invoice p { margin: .2rem 0; }
+.invoice dl { margin-bottom: 1rem; }
+.brand.big-left { font-size: 1.6rem; }
+@media print {
+    .no-print, .sidebar, .alert { display: none !important; }
+    body, .content { background: #fff; padding: 0; }
+    .card { border: 0; }
+}
+.filters input[type=checkbox], .filters input[type=radio] { flex: 0 0 auto; min-width: 0; }
+.filters label.check { display: flex; align-items: center; gap: .4rem; color: var(--slate); }

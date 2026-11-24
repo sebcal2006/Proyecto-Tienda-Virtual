@@ -24,10 +24,12 @@ public class OrderService {
     private final DeliveryAddressRepository addresses;
     private final PaymentMethodRepository paymentMethods;
     private final CustomerService customers;
+    private final DeliveryRepository deliveries;
 
     public OrderService(OrderRepository orders, ProductRepository products, InventoryMovementRepository movements,
                         CartRepository carts, DeliveryAddressRepository addresses,
-                        PaymentMethodRepository paymentMethods, CustomerService customers) {
+                        PaymentMethodRepository paymentMethods, CustomerService customers,
+                        DeliveryRepository deliveries) {
         this.orders = orders;
         this.products = products;
         this.movements = movements;
@@ -35,6 +37,7 @@ public class OrderService {
         this.addresses = addresses;
         this.paymentMethods = paymentMethods;
         this.customers = customers;
+        this.deliveries = deliveries;
     }
 
     /** Datos del formulario de compra en línea (RF-026, RF-027, RF-032). */
@@ -130,6 +133,9 @@ public class OrderService {
         if (next == OrderStatus.IN_PREPARATION && order.getChannel() == SalesChannel.ONLINE && !order.isPaid()) {
             throw new BusinessException("El pedido no tiene un pago aprobado");
         }
+        if (order.getChannel() == SalesChannel.ONLINE && next != OrderStatus.IN_PREPARATION) {
+            throw new BusinessException("Los pedidos en línea los lleva el domiciliario: asígnelo para continuar");
+        }
         order.changeStatus(next, by);
         return order;
     }
@@ -146,6 +152,9 @@ public class OrderService {
             product.setStock(product.getStock() + item.getQuantity());
             movements.save(new InventoryMovement(product, by, order, MovementType.ENTRY, item.getQuantity(),
                     "Devolución por cancelación del pedido " + order.getCode()));
+        }
+        if (order.getDelivery() != null) {
+            deliveries.delete(order.getDelivery());
         }
         order.changeStatus(OrderStatus.CANCELLED, by);
         return order;

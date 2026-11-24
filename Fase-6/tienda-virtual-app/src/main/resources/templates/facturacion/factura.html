@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${invoice.number})}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('facturacion')}" class="no-print"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <div class="row no-print">
+        <a class="back" th:href="@{/facturacion}">← Facturación</a>
+        <button class="btn btn-small" onclick="window.print()">Imprimir / Guardar como PDF</button>
+    </div>
+    <article class="card invoice">
+        <header class="invoice-head">
+            <div>
+                <div class="brand big-left">Tienda<span>Virtual</span></div>
+                <p class="muted">Sistema de Gestión de Ventas · Grupo 03</p>
+            </div>
+            <div class="r">
+                <h1 class="invoice-title">Factura de venta</h1>
+                <p><b th:text="${invoice.number}">FV-0001</b></p>
+                <p class="muted" th:text="${#temporals.format(invoice.issuedAt, 'dd/MM/yyyy HH:mm')}"></p>
+            </div>
+        </header>
+        <dl>
+            <dt>Cliente</dt><dd th:text="${invoice.order.customer.name}"></dd>
+            <dt th:if="${invoice.order.customer.document}">Documento</dt>
+            <dd th:if="${invoice.order.customer.document}" th:text="${invoice.order.customer.document}"></dd>
+            <dt>Pedido</dt><dd th:text="${invoice.order.code} + ' · ' + ${invoice.order.channel.label}"></dd>
+            <dt>Expedida por</dt><dd th:text="${invoice.issuedBy.name}"></dd>
+        </dl>
+        <table>
+            <thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Precio</th><th class="r">Valor</th></tr></thead>
+            <tr th:each="i : ${invoice.order.items}">
+                <td th:text="${i.product.code} + ' · ' + ${i.product.name}"></td>
+                <td class="r" th:text="${i.quantity}"></td>
+                <td class="r" th:text="${@fmt.money(i.unitPrice)}"></td>
+                <td class="r" th:text="${@fmt.money(i.subtotal)}"></td>
+            </tr>
+            <tfoot>
+                <tr><td colspan="3" class="r">Subtotal</td><td class="r" th:text="${@fmt.money(invoice.subtotal)}"></td></tr>
+                <tr><td colspan="3" class="r">IVA 19 %</td><td class="r" th:text="${@fmt.money(invoice.tax)}"></td></tr>
+                <tr><td colspan="3" class="r"><b>Total</b></td><td class="r total" th:text="${@fmt.money(invoice.total)}"></td></tr>
+            </tfoot>
+        </table>
+    </article>
+</main>
+</body>
+</html>

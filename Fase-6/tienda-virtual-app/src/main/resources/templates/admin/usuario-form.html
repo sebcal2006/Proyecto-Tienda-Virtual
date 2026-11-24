@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${user == null} ? 'Nuevo usuario' : 'Editar usuario')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('usuarios')}"></aside>
+<main class="content">
+    <a class="back" th:href="@{/admin/usuarios}">← Usuarios</a>
+    <h1 th:text="${user == null} ? 'Nuevo usuario' : 'Editar ' + ${user.name}">Usuario</h1>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+    <form method="post" class="card form narrow-form"
+          th:action="${user == null} ? @{/admin/usuarios/nuevo} : @{/admin/usuarios/{id}(id=${user.id})}">
+        <label>Nombre completo *<input name="name" th:value="${form.name()}"></label>
+        <label>Correo electrónico *
+            <input type="email" name="email" th:value="${form.email()}" th:disabled="${user != null}">
+        </label>
+        <label>Teléfono<input name="phone" th:value="${form.phone()}"></label>
+        <label th:text="${user == null} ? 'Contraseña *' : 'Nueva contraseña (déjela vacía para no cambiarla)'">Contraseña</label>
+        <input type="password" name="password" autocomplete="new-password">
+        <small class="muted">Mínimo 8 caracteres, con letras y números.</small>
+
+        <fieldset>
+            <legend>Roles *</legend>
+            <label class="check" th:each="r : ${roles}">
+                <input type="checkbox" name="roleIds" th:value="${r.id}" th:checked="${form.roleIds() != null and form.roleIds().contains(r.id)}">
+                <span><b th:text="${r.label}"></b> <small class="muted" th:text="${r.description}"></small></span>
+            </label>
+        </fieldset>
+
+        <label class="check"><input type="checkbox" name="active" value="true" th:checked="${form.active()}">
+            Cuenta activa (si se desactiva, el usuario no puede iniciar sesión)</label>
+        <button class="btn" th:text="${user == null} ? 'Crear usuario' : 'Guardar cambios'">Guardar</button>
+    </form>
+</main>
+</body>
+</html>

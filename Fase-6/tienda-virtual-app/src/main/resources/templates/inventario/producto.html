@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${product.name})}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('inventario')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <a class="back" th:href="@{/inventario}">← Inventario</a>
+    <h1><span th:text="${product.name}"></span>
+        <span class="badge badge-gray" th:text="${product.code}"></span>
+        <span class="badge badge-red" th:unless="${product.active}">Inactivo</span></h1>
+    <div class="kpis">
+        <div class="kpi"><span>Existencia actual</span><b th:text="${product.stock}">0</b><small>unidades</small></div>
+    </div>
+    <div class="two-col" sec:authorize="hasRole('INVENTORY_MANAGER')">
+        <form class="card form" th:action="@{/inventario/{id}/entrada(id=${product.id})}" method="post">
+            <h2>Registrar entrada</h2>
+            <label>Cantidad *<input type="number" name="quantity" min="1" required></label>
+            <label>Nota<input name="notes" placeholder="Compra a proveedor, devolución…"></label>
+            <button class="btn">Sumar al inventario</button>
+        </form>
+        <form class="card form" th:action="@{/inventario/{id}/salida(id=${product.id})}" method="post">
+            <h2>Registrar salida</h2>
+            <label>Cantidad *<input type="number" name="quantity" min="1" required></label>
+            <label>Nota<input name="notes" placeholder="Producto dañado, ajuste…"></label>
+            <button class="btn danger">Restar del inventario</button>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Historial de movimientos</h2>
+        <p class="empty" th:if="${movements.isEmpty()}">Sin movimientos registrados.</p>
+        <table th:unless="${movements.isEmpty()}">
+            <thead><tr><th>Fecha</th><th>Tipo</th><th class="r">Cantidad</th><th>Detalle</th><th>Pedido</th><th>Registró</th></tr></thead>
+            <tr th:each="m : ${movements}">
+                <td th:text="${#temporals.format(m.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td><span class="badge" th:classappend="${m.type.name() == 'ENTRY'} ? 'badge-green' : 'badge-amber'"
+                          th:text="${m.type.name() == 'ENTRY'} ? 'Entrada' : 'Salida'"></span></td>
+                <td class="r" th:text="(${m.type.name() == 'ENTRY'} ? '+' : '-') + ${m.quantity}"></td>
+                <td th:text="${m.notes}"></td>
+                <td th:text="${m.order != null} ? ${m.order.code} : '—'"></td>
+                <td th:text="${m.user.name}"></td>
+            </tr>
+        </table>
+    </div>
+</main>
+</body>
+</html>

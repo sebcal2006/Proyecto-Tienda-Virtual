@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Panel')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('panel')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Panel del administrador</h1>
+    <div class="kpis">
+        <div class="kpi"><span>Ventas (sin cancelados)</span><b th:text="${@fmt.money(sales)}">$</b>
+            <small th:text="${orderCount} + ' pedidos'"></small></div>
+        <a class="kpi" th:href="@{/gestion/pedidos(estado='PENDING')}"><span>Pendientes</span><b th:text="${pending}">0</b>
+            <small>por preparar</small></a>
+        <a class="kpi" th:href="@{/gestion/pedidos(estado='IN_PREPARATION')}"><span>En preparación</span><b th:text="${preparing}">0</b>
+            <small th:text="${onTheWay} + ' en camino'"></small></a>
+        <a class="kpi" th:href="@{/inventario(bajo=true)}"><span>Existencia baja</span><b th:text="${lowStock.size()}">0</b>
+            <small>10 unidades o menos</small></a>
+        <a class="kpi" th:href="@{/admin/usuarios}"><span>Usuarios</span><b th:text="${userCount}">0</b>
+            <small>todas las cuentas</small></a>
+        <a class="kpi" th:href="@{/facturacion}"><span>Facturas</span><b th:text="${invoiceCount}">0</b>
+            <small>generadas</small></a>
+    </div>
+    <div class="two-col">
+        <section class="card">
+            <h2>Últimos pedidos</h2>
+            <table>
+                <tr th:each="o : ${latest}">
+                    <td><a th:href="@{/gestion/pedidos/{id}(id=${o.id})}" th:text="${o.code}"></a></td>
+                    <td th:text="${o.customer.name}"></td>
+                    <td><span class="badge" th:classappend="${o.status.css}" th:text="${o.status.label}"></span></td>
+                    <td class="r" th:text="${@fmt.money(o.total)}"></td>
+                </tr>
+            </table>
+        </section>
+        <section class="card">
+            <h2>Productos por reponer</h2>
+            <p class="empty" th:if="${lowStock.isEmpty()}">Todos los productos tienen existencia suficiente.</p>
+            <table th:unless="${lowStock.isEmpty()}">
+                <tr th:each="p : ${lowStock}">
+                    <td><a th:href="@{/inventario/{id}(id=${p.id})}" th:text="${p.name}"></a></td>
+                    <td class="r"><span class="stock" th:classappend="${p.stock == 0} ? 'out' : 'low'"
+                                        th:text="${p.stock} + ' und.'"></span></td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</main>
+</body>
+</html>

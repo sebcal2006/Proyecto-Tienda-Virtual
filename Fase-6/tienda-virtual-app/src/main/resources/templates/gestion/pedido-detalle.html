@@ -59,10 +59,34 @@
                     </li>
                 </ul>
             </div>
+            <div class="card" th:if="${order.channel.name() == 'ONLINE' and order.status.name() != 'PENDING' and order.status.name() != 'CANCELLED'}">
+                <h2>Domicilio</h2>
+                <th:block th:if="${order.delivery}">
+                    <p><b th:text="${order.delivery.courier.name}"></b>
+                        <span class="badge" th:classappend="${order.delivery.status.css}" th:text="${order.delivery.status.label}"></span></p>
+                    <p class="muted" th:text="'Asignado el ' + ${#temporals.format(order.delivery.assignedAt, 'dd/MM/yyyy HH:mm')}"></p>
+                    <div class="alert error" th:if="${order.delivery.incident}" th:text="'Incidencia: ' + ${order.delivery.incident}"></div>
+                </th:block>
+                <p class="muted" th:unless="${order.delivery}">Sin domiciliario asignado.</p>
+                <form sec:authorize="hasRole('SELLER')" class="form"
+                      th:if="${order.status.name() == 'IN_PREPARATION' and (order.delivery == null or order.delivery.status.name() == 'ASSIGNED')}"
+                      th:action="@{/gestion/pedidos/{id}/asignar(id=${order.id})}" method="post">
+                    <p class="empty" th:if="${couriers.isEmpty()}">No hay domiciliarios disponibles.</p>
+                    <select name="courierId" th:unless="${couriers.isEmpty()}">
+                        <option th:each="c : ${couriers}" th:value="${c.id}" th:text="${c.name}"
+                                th:selected="${order.delivery != null and order.delivery.courier.id == c.id}"></option>
+                    </select>
+                    <button class="btn" th:text="${order.delivery == null} ? 'Asignar domiciliario' : 'Reasignar'">Asignar</button>
+                </form>
+            </div>
+            <div class="card" th:if="${order.invoice}">
+                <h2>Factura</h2>
+                <p><b th:text="${order.invoice.number}"></b> · <span th:text="${@fmt.money(order.invoice.total)}"></span></p>
+            </div>
             <div class="card" sec:authorize="hasRole('SELLER')"
-                 th:if="${order.status.next() != null or order.status.canBeCancelled()}">
+                 th:if="${(order.status.next() != null and (order.channel.name() == 'IN_STORE' or order.status.name() == 'PENDING')) or order.status.canBeCancelled()}">
                 <h2>Acciones</h2>
-                <form th:if="${order.status.next() != null}" th:action="@{/gestion/pedidos/{id}/avanzar(id=${order.id})}" method="post">
+                <form th:if="${order.status.next() != null and (order.channel.name() == 'IN_STORE' or order.status.name() == 'PENDING')}" th:action="@{/gestion/pedidos/{id}/avanzar(id=${order.id})}" method="post">
                     <button class="btn full" th:text="'Pasar a ' + ${order.status.next().label}">Avanzar</button>
                 </form>
                 <form th:if="${order.status.canBeCancelled()}" th:action="@{/gestion/pedidos/{id}/cancelar(id=${order.id})}" method="post"

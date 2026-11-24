@@ -66,6 +66,14 @@ public class Order {
         this.channel = channel;
     }
 
+    /** Domicilio asignado (solo pedidos en línea). */
+    @OneToOne(mappedBy = "order")
+    private Delivery delivery;
+
+    /** Factura generada (RF-041). */
+    @OneToOne(mappedBy = "order")
+    private Invoice invoice;
+
     @PrePersist
     void prePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
@@ -96,6 +104,14 @@ public class Order {
     public void changeStatus(OrderStatus newStatus, User by) {
         this.status = newStatus;
         history.add(new OrderStatusHistory(this, newStatus, by));
+    }
+
+    public Delivery getDelivery() { return delivery; }
+    public Invoice getInvoice() { return invoice; }
+
+    /** Pedido que se puede facturar: no cancelado y, si es en línea, con pago aprobado. */
+    public boolean isBillable() {
+        return status != OrderStatus.CANCELLED && (channel == SalesChannel.IN_STORE || isPaid());
     }
 
     public Integer getId() { return id; }

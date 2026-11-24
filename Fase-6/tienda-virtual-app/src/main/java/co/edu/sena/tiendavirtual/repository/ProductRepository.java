@@ -23,6 +23,27 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             """)
     List<Product> search(@Param("q") String q, @Param("categoryId") Integer categoryId);
 
+    /** Administración e inventario: todos los productos, activos e inactivos. */
+    @Query("""
+            select p from Product p
+            where (:q is null or lower(p.name) like lower(concat('%', :q, '%'))
+                              or lower(p.code) like lower(concat('%', :q, '%')))
+            order by p.name
+            """)
+    List<Product> searchAll(@Param("q") String q);
+
+    boolean existsByCodeIgnoreCase(String code);
+
+    /** RF-007 CA-02: el producto está en carritos o en pedidos que aún no salen. */
+    @Query("""
+            select (select count(ci) from CartItem ci where ci.product.id = :id)
+                 + (select count(oi) from OrderItem oi where oi.product.id = :id
+                    and oi.order.status in (co.edu.sena.tiendavirtual.entity.OrderStatus.PENDING,
+                                            co.edu.sena.tiendavirtual.entity.OrderStatus.IN_PREPARATION))
+            from Product p where p.id = :id
+            """)
+    long countInProgressUses(@Param("id") Integer id);
+
     /** RNF-008: bloquea la fila para que dos ventas no descuenten la misma unidad. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Product p where p.id = :id")

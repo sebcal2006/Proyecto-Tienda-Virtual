@@ -34,7 +34,8 @@ class OrderServiceTest {
         carts = mock(CartRepository.class);
         customers = mock(CustomerService.class);
         service = new OrderService(orders, products, movements, carts,
-                mock(DeliveryAddressRepository.class), mock(PaymentMethodRepository.class), customers);
+                mock(DeliveryAddressRepository.class), mock(PaymentMethodRepository.class), customers,
+                mock(DeliveryRepository.class));
 
         laptop = new Product("P-001", "Portátil", new BigDecimal("2500000"), 5);
         when(products.findByIdForUpdate(any())).thenReturn(Optional.of(laptop));

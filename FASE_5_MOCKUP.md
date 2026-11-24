@@ -4,7 +4,7 @@
 **Integrantes:** Sebastián Calderón Briñez, Luis Alfredo Corrales Arrieta, Juan José Cuéllar Rojas
 **Instructor:** Carlos Julio Cadena
 
-> **Versión 2 (09/11/2026).** Ajustada según la retroalimentación del instructor: paleta tecnológica, barra de navegación y migas de pan unificadas, vistas para los **6 roles**, acceso del Administrador a facturas (RF-042), accesibilidad y ortografía. El documento corregido es `PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_5.docx`.
+> **Versión 2 (09/11/2026).** Ajustada según la retroalimentación del instructor: paleta tecnológica, barra de navegación y migas de pan unificadas, vistas para los **6 roles**, acceso del Administrador a facturas (RF-042), accesibilidad y ortografía. El documento corregido está en el consolidado `PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_6.docx` (capítulo 7).
 
 ---
 

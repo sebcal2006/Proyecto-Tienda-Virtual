@@ -4,6 +4,7 @@ import co.edu.sena.tiendavirtual.entity.OrderStatus;
 import co.edu.sena.tiendavirtual.entity.SalesChannel;
 import co.edu.sena.tiendavirtual.service.BusinessException;
 import co.edu.sena.tiendavirtual.service.CurrentUserService;
+import co.edu.sena.tiendavirtual.service.DeliveryService;
 import co.edu.sena.tiendavirtual.service.OrderService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * RF-028 (consultar pedidos), RF-029 (detalle), RF-030 (cancelar) y RF-031 (cambiar estado).
+ * RF-028 (consultar pedidos y su detalle), RF-030 (cancelar), RF-031 (cambiar estado) y RF-035 (asignar domiciliario).
  * El administrador consulta; el vendedor además cambia el estado (RNF-002).
  */
 @Controller
@@ -21,10 +22,12 @@ public class OrderManagementController {
 
     private final OrderService orders;
     private final CurrentUserService current;
+    private final DeliveryService deliveries;
 
-    public OrderManagementController(OrderService orders, CurrentUserService current) {
+    public OrderManagementController(OrderService orders, CurrentUserService current, DeliveryService deliveries) {
         this.orders = orders;
         this.current = current;
+        this.deliveries = deliveries;
     }
 
     @GetMapping
@@ -41,6 +44,7 @@ public class OrderManagementController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Integer id, Model model) {
         model.addAttribute("order", orders.get(id));
+        model.addAttribute("couriers", deliveries.availableCouriers());
         return "gestion/pedido-detalle";
     }
 
@@ -49,6 +53,20 @@ public class OrderManagementController {
         try {
             var order = orders.advance(id, current.user(auth));
             flash.addFlashAttribute("ok", "Estado actualizado a " + order.getStatus().getLabel());
+        } catch (BusinessException ex) {
+            flash.addFlashAttribute("error", ex.getMessage());
+        }
+        return "redirect:/gestion/pedidos/" + id;
+    }
+
+    /** RF-035. */
+    @PostMapping("/{id}/asignar")
+    public String assign(@PathVariable Integer id, @RequestParam(required = false) Integer courierId,
+                         RedirectAttributes flash) {
+        try {
+            var delivery = deliveries.assign(id, courierId);
+            flash.addFlashAttribute("ok", "Pedido asignado a " + delivery.getCourier().getName()
+                    + ". Ya aparece en sus entregas");
         } catch (BusinessException ex) {
             flash.addFlashAttribute("error", ex.getMessage());
         }

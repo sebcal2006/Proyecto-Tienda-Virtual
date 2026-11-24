@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Productos')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('productos')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <div class="title-row">
+        <h1>Productos</h1>
+        <a class="btn" th:href="@{/admin/productos/nuevo}">Nuevo producto</a>
+    </div>
+    <form class="filters" th:action="@{/admin/productos}" method="get">
+        <input name="q" th:value="${q}" placeholder="Buscar por nombre o código">
+        <button class="btn">Buscar</button>
+    </form>
+    <div class="card">
+        <p class="empty" th:if="${products.isEmpty()}">No hay productos con ese criterio.</p>
+        <table th:unless="${products.isEmpty()}">
+            <thead><tr><th>Producto</th><th>Código</th><th>Categoría</th><th class="r">Precio</th><th class="r">Existencia</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="p : ${products}">
+                <td><b th:text="${p.name}"></b></td>
+                <td th:text="${p.code}"></td>
+                <td th:text="${p.category.name}"></td>
+                <td class="r" th:text="${@fmt.money(p.price)}"></td>
+                <td class="r" th:text="${p.stock}"></td>
+                <td><span class="badge" th:classappend="${p.active} ? 'badge-green' : 'badge-red'"
+                          th:text="${p.active} ? 'Activo' : 'Inactivo'"></span></td>
+                <td class="row">
+                    <a th:href="@{/admin/productos/{id}(id=${p.id})}">Editar</a>
+                    <form th:if="${p.active}" th:action="@{/admin/productos/{id}/desactivar(id=${p.id})}" method="post">
+                        <button class="link danger">Desactivar</button></form>
+                    <form th:unless="${p.active}" th:action="@{/admin/productos/{id}/activar(id=${p.id})}" method="post">
+                        <button class="link">Activar</button></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

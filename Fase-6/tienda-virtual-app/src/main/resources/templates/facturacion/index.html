@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Facturación')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('facturacion')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Facturación</h1>
+    <div class="card" sec:authorize="hasRole('BILLING_MANAGER')">
+        <h2>Pedidos por facturar</h2>
+        <p class="muted">Pedidos no cancelados sin factura; los pedidos en línea deben tener el pago aprobado.</p>
+        <p class="empty" th:if="${pending.isEmpty()}">No hay pedidos pendientes de facturar.</p>
+        <table th:unless="${pending.isEmpty()}">
+            <thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th>Canal</th><th>Estado</th><th class="r">Total</th><th></th></tr></thead>
+            <tr th:each="o : ${pending}">
+                <td><b th:text="${o.code}"></b></td>
+                <td th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy')}"></td>
+                <td th:text="${o.customer.name}"></td>
+                <td th:text="${o.channel.label}"></td>
+                <td><span class="badge" th:classappend="${o.status.css}" th:text="${o.status.label}"></span></td>
+                <td class="r" th:text="${@fmt.money(o.total)}"></td>
+                <td><form th:action="@{/facturacion/generar}" method="post">
+                    <input type="hidden" name="orderId" th:value="${o.id}">
+                    <button class="btn btn-small">Generar factura</button></form></td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <h2>Facturas generadas</h2>
+        <p class="muted" sec:authorize="!hasRole('BILLING_MANAGER')">Consulta de solo lectura (administrador).</p>
+        <p class="empty" th:if="${invoices.isEmpty()}">Aún no hay facturas.</p>
+        <table th:unless="${invoices.isEmpty()}">
+            <thead><tr><th>Número</th><th>Fecha</th><th>Pedido</th><th>Cliente</th><th class="r">Subtotal</th><th class="r">IVA</th><th class="r">Total</th><th></th></tr></thead>
+            <tr th:each="i : ${invoices}">
+                <td><b th:text="${i.number}"></b></td>
+                <td th:text="${#temporals.format(i.issuedAt, 'dd/MM/yyyy')}"></td>
+                <td th:text="${i.order.code}"></td>
+                <td th:text="${i.order.customer.name}"></td>
+                <td class="r" th:text="${@fmt.money(i.subtotal)}"></td>
+                <td class="r" th:text="${@fmt.money(i.tax)}"></td>
+                <td class="r"><b th:text="${@fmt.money(i.total)}"></b></td>
+                <td><a th:href="@{/facturacion/{id}(id=${i.id})}">Ver / PDF</a></td>
+            </tr>
+        </table>
+    </div>
+</main>
+</body>
+</html>

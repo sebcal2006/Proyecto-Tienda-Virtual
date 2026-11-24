@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/** RF-034 (seguimiento del pedido) y RF-040 (historial de compras del cliente). */
+/** RF-039 (seguimiento del pedido), RF-040 (historial de compras) y RF-034 (estado del pago). */
 @Controller
 @RequestMapping("/mis-pedidos")
 public class MyOrdersController {

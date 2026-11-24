@@ -46,6 +46,9 @@
             Pago: <span class="badge" th:with="p=${order.payments[order.payments.size() - 1]}"
                         th:classappend="${p.status.css}" th:text="${p.status.label} + ' · ' + ${p.method.name}"></span>
         </p>
+        <p class="muted" th:if="${order.delivery}">
+            Domiciliario: <b th:text="${order.delivery.courier.name}"></b>
+        </p>
         <p class="muted" th:if="${order.deliveryAddress}">
             Entrega en <span th:text="${order.deliveryAddress.address} + ', ' + ${order.deliveryAddress.city}"></span>
         </p>
