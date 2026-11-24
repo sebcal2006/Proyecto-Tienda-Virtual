@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * RF-028 (consultar pedidos), RF-029 (detalle), RF-030 (cancelar) y RF-031 (cambiar estado).
+ * RF-028 (consultar pedidos y su detalle), RF-030 (cancelar), RF-031 (cambiar estado) y RF-035 (asignar domiciliario).
  * El administrador consulta; el vendedor además cambia el estado (RNF-002).
  */
 @Controller

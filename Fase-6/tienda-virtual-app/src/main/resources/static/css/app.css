@@ -123,7 +123,7 @@ dd { margin: 0; }
 td { white-space: nowrap; }
 td:first-child, .timeline li, dd { white-space: normal; }
 .price, .total { white-space: nowrap; }
-@media (max-width: 1100px) { .content .two-col { grid-template-columns: 1fr; } }
+@media (max-width: 1250px) { .content .two-col { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
     .container, .content { padding: 1rem; }
     .topbar { padding: .8rem 1rem; }
@@ -157,3 +157,5 @@ td.row { gap: .8rem; }
     body, .content { background: #fff; padding: 0; }
     .card { border: 0; }
 }
+.filters input[type=checkbox], .filters input[type=radio] { flex: 0 0 auto; min-width: 0; }
+.filters label.check { display: flex; align-items: center; gap: .4rem; color: var(--slate); }

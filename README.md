@@ -20,6 +20,6 @@ Sistema de tienda virtual de productos de tecnología con dos canales de venta, 
 
 **Prototipo navegable (sin cuenta):** https://sebcal2006.github.io/Proyecto-Tienda-Virtual/prototipo/
 
-**Documento consolidado (Fases 1 a 5):** [`PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_5.docx`](PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_5.docx)
+**Documento consolidado (Fases 1 a 6):** [`PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_6.docx`](PROYECTO_TIENDA_VIRTUAL_GRUPO_3_FASE_6.docx)
 
 Las versiones anteriores del documento siguen en el historial de Git.
