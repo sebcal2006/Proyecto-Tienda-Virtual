@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventario — Existencias</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="inventario" active="inventario" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Existencias de inventario</h1>
+<p style="margin: 6px 0 0; font-size: 15px; color: #475569">Consulta del stock actual por producto (RF-010, RF-013).</p>
+</div>
+<a href="Movimientos.dc.html" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 10px; background: #2563EB; color: #FFFFFF; font-weight: 800; font-size: 15px; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 4v16M7 4L3 8M7 4l4 4"></path><path d="M17 20V4M17 20l-4-4M17 20l4-4"></path></svg>Registrar entrada o salida</a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px">
+<div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px"><div style="font-size: 14px; font-weight: 700; color: #475569">Productos activos</div><div style="font-size: 28px; font-weight: 800">8</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px"><div style="font-size: 14px; font-weight: 700; color: #475569">Unidades en bodega</div><div style="font-size: 28px; font-weight: 800">169</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px"><div style="font-size: 14px; font-weight: 700; color: #475569">Por reponer (≤ 10)</div><div style="font-size: 28px; font-weight: 800; color: #92400E">2</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px"><div style="font-size: 14px; font-weight: 700; color: #475569">Agotados</div><div style="font-size: 28px; font-weight: 800; color: #991B1B">1</div></div>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<label for="iq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar producto</label>
+<input id="iq" type="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Buscar por nombre o código" style="flex: 1 1 240px; min-height: 44px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1">
+<label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; cursor: pointer"><input type="checkbox" checked="{{ lowOnly }}" onChange="{{ setLow }}" style="width: 18px; height: 18px">Solo para reponer o agotados</label>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px">
+<thead><tr style="text-align: left; color: #475569"><th scope="col" style="padding: 10px 8px">Código</th><th scope="col" style="padding: 10px 8px">Producto</th><th scope="col" style="padding: 10px 8px">Categoría</th><th scope="col" style="padding: 10px 8px; text-align: right">Existencia</th><th scope="col" style="padding: 10px 8px">Estado</th><th scope="col" style="padding: 10px 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acción</span></th></tr></thead>
+<tbody>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+<tr style="border-top: 1px solid #E2E8F0"><td style="padding: 12px 8px; color: #334155">{{ r.code }}</td><td style="padding: 12px 8px; font-weight: 700">{{ r.name }}</td><td style="padding: 12px 8px">{{ r.cat }}</td><td style="padding: 12px 8px; text-align: right; font-weight: 800">{{ r.stock }}</td>
+<td style="padding: 12px 8px"><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: {{ r.bg }}; color: {{ r.color }}">{{ r.label }}</span></td>
+<td style="padding: 12px 8px; text-align: right"><a href="Movimientos.dc.html" style="font-weight: 700; white-space: nowrap">Ver movimientos</a></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<sc-if value="{{ none }}" hint-placeholder-val="{{ false }}"><div role="status" style="padding: 28px; text-align: center; font-weight: 700; color: #334155">Producto no encontrado</div></sc-if>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', lowOnly: false }; }
+  renderVals() {
+    var self = this, s = this.state, q = s.q.trim().toLowerCase();
+    var items = [
+      ['LAP-001', 'Laptop 14" 16GB RAM', 'Computadores', 9, true], ['CEL-001', 'Smartphone 128GB', 'Celulares', 14, true],
+      ['MON-001', 'Monitor 24" Full HD', 'Monitores', 8, true], ['ACC-001', 'Audífonos Bluetooth', 'Accesorios', 29, true],
+      ['ACC-002', 'Mouse inalámbrico', 'Accesorios', 47, true], ['ACC-003', 'Teclado mecánico', 'Accesorios', 24, true],
+      ['ACC-004', 'Funda para celular', 'Accesorios', 38, true], ['ACC-006', 'Base refrigerante para portátil', 'Accesorios', 0, true],
+      ['ACC-005', 'Cable USB descontinuado', 'Accesorios', 0, false]
+    ];
+    var badge = function (n, act) {
+      if (!act) return ['Inactivo', '#F1F5F9', '#334155'];
+      if (n === 0) return ['Agotado', '#FEE2E2', '#991B1B'];
+      if (n <= 10) return ['Reponer', '#FEF3C7', '#92400E'];
+      return ['Disponible', '#D1FAE5', '#065F46'];
+    };
+    var rows = items.filter(function (i) {
+      return (!s.lowOnly || (i[4] && i[3] <= 10)) && (!q || (i[0] + ' ' + i[1]).toLowerCase().indexOf(q) >= 0);
+    }).map(function (i) { var b = badge(i[3], i[4]); return { code: i[0], name: i[1], cat: i[2], stock: i[3], label: b[0], bg: b[1], color: b[2] }; });
+    return {
+      q: s.q, lowOnly: s.lowOnly, rows: rows, none: rows.length === 0,
+      crumbs: [{ label: 'Inicio', href: 'Inventario.dc.html' }, { label: 'Inventario', href: 'Inventario.dc.html' }, { label: 'Existencias' }],
+      setQ: function (e) { self.setState({ q: e.target.value }); },
+      setLow: function (e) { self.setState({ lowOnly: e.target.checked }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

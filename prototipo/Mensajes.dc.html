@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mensajes del sistema</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 1400px; box-sizing: border-box; padding: 48px 56px; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div>
+<div style="font-size: 13px; font-weight: 700; color: #1D4ED8; letter-spacing: 0.06em; text-transform: uppercase">Tienda Virtual · Guía de mensajes</div>
+<h1 style="margin: 6px 0 0; font-size: 34px; font-weight: 800">Mensajes de error y confirmación</h1>
+<p style="margin: 6px 0 0; font-size: 15px; color: #334155">Textos de los criterios de aceptación del ERS. Cada mensaje combina color, ícono y texto (no depende solo del color) e indica el RF que lo origina.</p>
+</div>
+<div style="display: flex; gap: 8px">
+<sc-for list="{{ kinds }}" as="k" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; font-size: 13px; font-weight: 800; background: {{ k.bg }}; color: {{ k.color }}">{{ k.name }}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; flex: 1">
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">1 · Validación en el campo</h2>
+<p style="margin: 0; font-size: 13px; color: #475569">Borde rojo y texto debajo del campo. Se limpia al escribir.</p>
+<sc-for list="{{ fields }}" as="f" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 700; font-size: 14px">{{ f.label }}</span>
+<div style="min-height: 44px; border-radius: 10px; padding: 0 14px; display: flex; align-items: center; border: 1.5px solid #B91C1C; font-size: 15px">{{ f.value }}</div>
+<span style="font-size: 13px; font-weight: 600; color: #B91C1C">{{ f.msg }}</span>
+<span style="font-size: 12px; color: #475569">{{ f.ref }}</span>
+</div>
+</sc-for>
+
+<h2 style="margin: 8px 0 0; font-size: 18px; font-weight: 800">2 · Diálogo de confirmación</h2>
+<div role="img" aria-label="Ejemplo de diálogo de confirmación" style="border-radius: 14px; padding: 18px; background: #FFFFFF; box-shadow: 0 10px 30px rgba(15,23,42,0.16); border: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 17px; font-weight: 800">¿Cancelar el pedido PED-0004?</div>
+<div style="font-size: 14px; color: #334155; line-height: 1.5">El pedido pasará a cancelado, los productos regresan al inventario y la acción no se puede deshacer.</div>
+<div style="display: flex; justify-content: flex-end; gap: 8px">
+<span style="padding: 10px 14px; border-radius: 10px; border: 1.5px solid #CBD5E1; font-weight: 700; font-size: 14px">No, volver</span>
+<span style="padding: 10px 14px; border-radius: 10px; background: #B91C1C; color: #FFFFFF; font-weight: 800; font-size: 14px">Sí, cancelar pedido</span>
+</div>
+<span style="font-size: 12px; color: #475569">RF-030 · también en RF-007 (desactivar producto)</span>
+</div>
+
+<h2 style="margin: 8px 0 0; font-size: 18px; font-weight: 800">3 · Botón deshabilitado</h2>
+<div style="display: flex; gap: 10px; align-items: center">
+<span style="flex: 1; min-height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #F1F5F9; color: #475569; border: 1.5px dashed #94A3B8; font-weight: 700; font-size: 15px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg>Agotado</span>
+<span style="font-size: 12px; color: #475569; width: 150px">Ícono, texto, borde punteado y cursor: not-allowed</span>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">4 · Alertas de error y advertencia</h2>
+<p style="margin: 0; font-size: 13px; color: #475569">Banner arriba del formulario o la acción que falló.</p>
+<sc-for list="{{ errors }}" as="e" hint-placeholder-count="10">
+<div style="display: flex; gap: 10px; align-items: flex-start; border-radius: 12px; padding: 10px 13px; background: {{ e.bg }}; color: {{ e.color }}">
+<sc-if value="{{ e.isErr }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M15 9l-6 6M9 9l6 6"></path></svg></sc-if>
+<sc-if value="{{ e.isWarn }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 3l10 18H2L12 3z"></path><path d="M12 10v4"></path><path d="M12 17.5v.01"></path></svg></sc-if>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 700; font-size: 14px">{{ e.text }}</span><span style="font-size: 12px">{{ e.ref }}</span></div>
+</div>
+</sc-for>
+</section>
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">5 · Confirmaciones (toast)</h2>
+<p style="margin: 0; font-size: 13px; color: #475569">Arriba a la derecha; se cierran solas a los 3 segundos.</p>
+<sc-for list="{{ oks }}" as="o" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #047857; color: #FFFFFF; border-radius: 12px; padding: 10px 14px">
+<span style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12l5 5 9-10"></path></svg>{{ o.text }}</span>
+<span style="font-size: 12px; color: #D1FAE5; white-space: nowrap">{{ o.ref }}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px; flex: 1">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">6 · Estados vacíos</h2>
+<p style="margin: 0; font-size: 13px; color: #475569">Recuadro punteado en lugar de la tabla o la lista.</p>
+<sc-for list="{{ empties }}" as="v" hint-placeholder-count="6">
+<div style="border: 1.5px dashed #CBD5E1; border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<span style="font-weight: 700; font-size: 14px; color: #334155">{{ v.text }}</span><span style="font-size: 12px; color: #475569; white-space: nowrap">{{ v.ref }}</span>
+</div>
+</sc-for>
+</section>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var err = function (t, r) { return { text: t, ref: r, bg: '#FEE2E2', color: '#991B1B', isErr: true, isWarn: false }; };
+    var warn = function (t, r) { return { text: t, ref: r, bg: '#FEF3C7', color: '#78350F', isErr: false, isWarn: true }; };
+    return {
+      kinds: [
+        { name: '✕ Error', bg: '#FEE2E2', color: '#991B1B' }, { name: '⚠ Advertencia', bg: '#FEF3C7', color: '#78350F' },
+        { name: '✓ Éxito', bg: '#D1FAE5', color: '#065F46' }, { name: '○ Vacío', bg: '#F1F5F9', color: '#334155' }
+      ],
+      fields: [
+        { label: 'Correo electrónico', value: 'laura.gomez@correo.com', msg: 'Este correo ya está registrado', ref: 'RF-004' },
+        { label: 'Contraseña', value: '••••', msg: 'La contraseña no cumple los requisitos de seguridad', ref: 'RF-004 · RNF-003' },
+        { label: 'Código *', value: 'LAP-001', msg: 'Ya existe un producto con este código', ref: 'RF-005' },
+        { label: 'Motivo *', value: 'Selecciona el motivo', msg: 'Selecciona el motivo del movimiento', ref: 'RF-011 · RF-012' }
+      ],
+      errors: [
+        err('Usuario o contraseña incorrectos', 'RF-001 · inicio de sesión'),
+        err('Esta cuenta se encuentra inactiva', 'RF-001 · acceso bloqueado'),
+        err('Cliente no encontrado. Regístralo para continuar', 'RF-016 · venta presencial'),
+        err('Producto no encontrado', 'RF-018 · búsqueda del vendedor'),
+        err('Existencia insuficiente', 'RF-012 · RF-020 · RN-002'),
+        err('Busca o registra el cliente antes de registrar la venta', 'RF-019'),
+        err('Tu pago fue rechazado', 'RF-034 · estado del pago'),
+        err('Ingresa el nombre de quien recibe el pedido', 'RF-038 · confirmación de entrega'),
+        warn('Un pedido en camino o entregado ya no se puede cancelar', 'RF-030 · RN-003'),
+        warn('Asigna un domiciliario antes de marcar el pedido como en camino', 'RF-035'),
+        warn('Pago sin aprobar: no se puede facturar', 'RF-041 · RN-006')
+      ],
+      oks: [
+        { text: 'Producto LAP-002 registrado correctamente', ref: 'RF-005' },
+        { text: 'Entrada registrada: 10 und. de Monitor 24"', ref: 'RF-011' },
+        { text: 'Venta registrada: PED-0010', ref: 'RF-019' },
+        { text: '¡Compra confirmada! Pago aprobado', ref: 'RF-026 · RF-033' },
+        { text: 'Pedido asignado a Diego Domiciliario', ref: 'RF-035' },
+        { text: 'Entrega de PED-0003 confirmada', ref: 'RF-038' },
+        { text: 'Factura FV-0004 generada para PED-0004', ref: 'RF-041' }
+      ],
+      empties: [
+        { text: 'No se encontraron productos para tu búsqueda', ref: 'RF-009' },
+        { text: 'Tu carrito está vacío', ref: 'RF-025 · RN-001' },
+        { text: 'Sin movimientos registrados', ref: 'RF-014' },
+        { text: 'Sin entregas pendientes', ref: 'RF-036' },
+        { text: 'No hay pedidos pendientes por facturar', ref: 'RF-041' },
+        { text: 'Aún no tienes compras registradas', ref: 'RF-040' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

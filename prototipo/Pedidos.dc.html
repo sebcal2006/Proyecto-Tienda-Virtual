@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedidos — Back-office</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="admin" active="pedidos" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Pedidos registrados</h1>
+<span style="font-size: 14px; color: #475569; font-weight: 600">{{ countText }}</span>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end">
+<div style="flex: 2 1 260px; display: flex; flex-direction: column; gap: 6px">
+<label for="pq" style="font-weight: 700; font-size: 13px">Buscar</label>
+<input id="pq" type="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Nº de pedido o cliente" style="min-height: 44px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1">
+</div>
+<div style="flex: 1 1 170px; display: flex; flex-direction: column; gap: 6px">
+<label for="pe" style="font-weight: 700; font-size: 13px">Estado</label>
+<select id="pe" value="{{ st }}" onChange="{{ setSt }}" style="min-height: 44px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 15px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1">
+<option value="Todos">Todos</option><option value="Pendiente">Pendiente</option><option value="En preparación">En preparación</option><option value="En camino">En camino</option><option value="Entregado">Entregado</option><option value="Cancelado">Cancelado</option>
+</select>
+</div>
+<div style="flex: 1 1 150px; display: flex; flex-direction: column; gap: 6px">
+<label for="pc" style="font-weight: 700; font-size: 13px">Canal</label>
+<select id="pc" value="{{ ch }}" onChange="{{ setCh }}" style="min-height: 44px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 15px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1">
+<option value="Todos">Todos</option><option value="En línea">En línea</option><option value="Presencial">Presencial</option><option value="Telefónico">Telefónico</option>
+</select>
+</div>
+<button type="button" onClick="{{ clear }}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; color: #0F172A">Limpiar</button>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 8px 16px 16px; box-sizing: border-box">
+<sc-if value="{{ has }}" hint-placeholder-val="{{ true }}">
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 780px">
+<thead><tr style="text-align: left; color: #475569">
+<th scope="col" style="padding: 12px 8px; font-weight: 700">Pedido</th><th scope="col" style="padding: 12px 8px; font-weight: 700">Fecha</th><th scope="col" style="padding: 12px 8px; font-weight: 700">Cliente</th><th scope="col" style="padding: 12px 8px; font-weight: 700">Canal</th><th scope="col" style="padding: 12px 8px; font-weight: 700">Pago</th><th scope="col" style="padding: 12px 8px; font-weight: 700; text-align: right">Total</th><th scope="col" style="padding: 12px 8px; font-weight: 700">Estado</th><th scope="col" style="padding: 12px 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acción</span></th>
+</tr></thead>
+<tbody>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+<tr style="border-top: 1px solid #E2E8F0">
+<td style="padding: 13px 8px; font-weight: 800">{{ r.id }}</td><td style="padding: 13px 8px; color: #475569">{{ r.date }}</td><td style="padding: 13px 8px">{{ r.client }}</td><td style="padding: 13px 8px">{{ r.ch }}</td>
+<td style="padding: 13px 8px; font-weight: 700; color: {{ r.payColor }}">{{ r.pay }}</td>
+<td style="padding: 13px 8px; text-align: right; font-weight: 700">{{ r.total }}</td>
+<td style="padding: 13px 8px"><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; background: {{ r.bg }}; color: {{ r.color }}">{{ r.st }}</span></td>
+<td style="padding: 13px 8px; text-align: right"><a href="PedidoDetalle.dc.html" style="font-weight: 700; white-space: nowrap">Ver detalle</a></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid #E2E8F0; font-size: 14px; color: #475569">
+<span>Página 1 de 5</span>
+<div style="display: flex; gap: 6px">
+<button type="button" disabled="{{ true }}" style="min-width: 44px; min-height: 40px; border-radius: 10px; border: 1.5px solid #E2E8F0; background: #F8FAFC; font: inherit; font-weight: 700; color: #94A3B8; cursor: not-allowed">Anterior</button>
+<button type="button" aria-current="page" style="min-width: 40px; min-height: 40px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 800">1</button>
+<button type="button" style="min-width: 40px; min-height: 40px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; font: inherit; font-weight: 700; color: #0F172A; cursor: pointer">2</button>
+<button type="button" style="min-width: 44px; min-height: 40px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; font: inherit; font-weight: 700; color: #0F172A; cursor: pointer">Siguiente</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ none }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="padding: 48px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="font-weight: 800; font-size: 18px">No se encontraron pedidos con estos filtros</div>
+<div style="font-size: 15px; color: #475569">Cambia el estado, el canal o el texto de búsqueda.</div>
+</div>
+</sc-if>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', st: 'Todos', ch: 'Todos' }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var ST = { 'Pendiente': ['#F1F5F9', '#334155'], 'En preparación': ['#FEF3C7', '#92400E'], 'En camino': ['#DBEAFE', '#1E40AF'], 'Entregado': ['#D1FAE5', '#065F46'], 'Cancelado': ['#FEE2E2', '#991B1B'] };
+    var PAY = { 'Aprobado': '#065F46', 'Pendiente': '#92400E', 'Rechazado': '#991B1B', 'Reembolsado': '#334155' };
+    var all = [
+      ['PED-0009', '09/11/2026', 'Pedro Ramírez', 'Telefónico', 'Pendiente', '$ 1.071.000', 'En preparación'],
+      ['PED-0008', '09/11/2026', 'Laura Gómez', 'En línea', 'Aprobado', '$ 321.300', 'Pendiente'],
+      ['PED-0007', '02/11/2026', 'Laura Gómez', 'En línea', 'Reembolsado', '$ 773.500', 'Cancelado'],
+      ['PED-0006', '28/10/2026', 'Laura Gómez', 'En línea', 'Aprobado', '$ 53.550', 'Entregado'],
+      ['PED-0004', '25/10/2026', 'Ana Torres', 'En línea', 'Aprobado', '$ 178.500', 'Pendiente'],
+      ['PED-0005', '22/10/2026', 'Pedro Ramírez', 'Presencial', 'Rechazado', '$ 773.500', 'Cancelado'],
+      ['PED-0003', '20/10/2026', 'Laura Gómez', 'En línea', 'Aprobado', '$ 2.225.300', 'En camino'],
+      ['PED-0002', '07/10/2026', 'Pedro Ramírez', 'Presencial', 'Aprobado', '$ 196.350', 'Entregado'],
+      ['PED-0001', '05/10/2026', 'Ana Torres', 'En línea', 'Aprobado', '$ 3.082.100', 'Entregado']
+    ];
+    var q = s.q.trim().toLowerCase();
+    var rows = all.filter(function (r) {
+      return (s.st === 'Todos' || r[6] === s.st) && (s.ch === 'Todos' || r[3] === s.ch) && (!q || (r[0] + ' ' + r[2]).toLowerCase().indexOf(q) >= 0);
+    }).map(function (r) {
+      return { id: r[0], date: r[1], client: r[2], ch: r[3], pay: r[4], payColor: PAY[r[4]], total: r[5], st: r[6], bg: ST[r[6]][0], color: ST[r[6]][1] };
+    });
+    var filtered = s.q || s.st !== 'Todos' || s.ch !== 'Todos';
+    return {
+      q: s.q, st: s.st, ch: s.ch, rows: rows, has: rows.length > 0, none: rows.length === 0,
+      crumbs: [{ label: 'Inicio', href: 'Dashboard.dc.html' }, { label: 'Pedidos' }],
+      countText: filtered ? rows.length + ' resultados con los filtros aplicados' : '48 pedidos en total',
+      setQ: function (e) { self.setState({ q: e.target.value }); },
+      setSt: function (e) { self.setState({ st: e.target.value }); },
+      setCh: function (e) { self.setState({ ch: e.target.value }); },
+      clear: function () { self.setState({ q: '', st: 'Todos', ch: 'Todos' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

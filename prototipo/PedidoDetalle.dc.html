@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detalle del pedido PED-0004</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+select:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="vendedor" active="pedidos" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 16px">
+<div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Pedido PED-0004</h1>
+<span style="padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 800; background: {{ sBg }}; color: {{ sColor }}">{{ status }}</span>
+</div>
+<div style="font-size: 14px; color: #475569; margin-top: 6px">25/10/2026 · 8:05 p. m. · Canal en línea</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" onClick="{{ askCancel }}" disabled="{{ cannotCancel }}" style="min-height: 46px; padding: 0 18px; border-radius: 10px; font: inherit; font-weight: 700; font-size: 15px; cursor: {{ cancelCursor }}; border: 1.5px solid {{ cancelBorder }}; background: #FFFFFF; color: {{ cancelColor }}">Cancelar pedido</button>
+<button type="button" onClick="{{ advance }}" disabled="{{ cannotAdvance }}" style="min-height: 46px; padding: 0 20px; border-radius: 10px; border: 0; font: inherit; font-weight: 800; font-size: 15px; cursor: {{ advCursor }}; background: {{ advBg }}; color: {{ advColor }}">{{ advLabel }}</button>
+</div>
+</div>
+<sc-if value="{{ ruleNote }}" hint-placeholder-val="{{ false }}">
+<div role="note" style="background: #FEF3C7; color: #78350F; border-radius: 12px; padding: 12px 14px; font-weight: 600; font-size: 14px">{{ ruleNote }}</div>
+</sc-if>
+
+<ol aria-label="Estado del pedido" style="list-style: none; margin: 0; padding: 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px">
+<sc-for list="{{ track }}" as="t" hint-placeholder-count="4">
+<li style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center">
+<span style="width: 36px; height: 36px; flex: none; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: {{ t.dotBg }}; color: {{ t.dotColor }}; border: 2px solid {{ t.ring }}">
+<sc-if value="{{ t.iClock }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></sc-if>
+<sc-if value="{{ t.iBox }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg></sc-if>
+<sc-if value="{{ t.iTruck }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg></sc-if>
+<sc-if value="{{ t.iCheck }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+<sc-if value="{{ t.iX }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if>
+</span>
+<span style="flex: 1; height: 3px; background: {{ t.lineBg }}"></span>
+</div>
+<span style="font-weight: 800; font-size: 14px; color: {{ t.color }}">{{ t.label }}</span>
+<span style="font-size: 12px; font-weight: 700; color: {{ t.tagColor }}">{{ t.tag }}</span>
+</li>
+</sc-for>
+</ol>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+<div style="flex: 2 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px">
+<h2 style="margin: 0 0 6px; font-size: 18px; font-weight: 800">Productos del pedido</h2>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 460px">
+<thead><tr style="text-align: left; color: #475569"><th scope="col" style="padding: 10px 6px">Producto</th><th scope="col" style="padding: 10px 6px; text-align: right">Cant.</th><th scope="col" style="padding: 10px 6px; text-align: right">Precio unit.</th><th scope="col" style="padding: 10px 6px; text-align: right">Subtotal</th></tr></thead>
+<tbody>
+<tr style="border-top: 1px solid #E2E8F0"><td style="padding: 12px 6px"><div style="font-weight: 700">Audífonos Bluetooth</div><div style="font-size: 13px; color: #475569">ACC-001</div></td><td style="padding: 12px 6px; text-align: right">1</td><td style="padding: 12px 6px; text-align: right">$ 150.000</td><td style="padding: 12px 6px; text-align: right; font-weight: 700">$ 150.000</td></tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-top: 12px; border-top: 1px solid #E2E8F0; font-size: 14px">
+<div style="display: flex; gap: 24px"><span style="color: #475569">Subtotal</span><span style="font-weight: 700">$ 150.000</span></div>
+<div style="display: flex; gap: 24px"><span style="color: #475569">IVA 19%</span><span style="font-weight: 700">$ 28.500</span></div>
+<div style="display: flex; gap: 24px; font-size: 17px; font-weight: 800"><span>Total</span><span>$ 178.500</span></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px">
+<h2 style="margin: 0 0 10px; font-size: 18px; font-weight: 800">Historial del pedido</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+<sc-for list="{{ log }}" as="l" hint-placeholder-count="3">
+<li style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #E2E8F0; font-size: 14px"><span style="width: 150px; flex: none; color: #475569">{{ l.when }}</span><span><strong>{{ l.what }}</strong> · {{ l.who }}</span></li>
+</sc-for>
+</ul>
+</section>
+</div>
+
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 16px">
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 800">Cliente</h2>
+<span style="font-weight: 700">Ana Torres</span><span style="font-size: 14px; color: #475569">Documento 1012345678</span><span style="font-size: 14px; color: #475569">ana.torres@correo.com · 310 123 4567</span>
+<span style="font-size: 14px; color: #475569">Cra 16 # 40-20, Barrio Cándido · Neiva</span>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0 0 4px; font-size: 16px; font-weight: 800">Pagos</h2>
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span>Tarjeta de crédito · 8:07 p. m.</span><span style="font-weight: 800; color: #991B1B">Rechazado</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span>PSE · 8:09 p. m.</span><span style="font-weight: 800; color: #065F46">Aprobado</span></div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Domicilio</h2>
+<sc-if value="{{ courierSet }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px"><span>Asignado a <strong>{{ courier }}</strong></span><button type="button" onClick="{{ unassign }}" disabled="{{ locked }}" style="border: 0; background: none; font: inherit; font-weight: 700; color: #1D4ED8; cursor: pointer; min-height: 44px">Cambiar</button></div>
+</sc-if>
+<sc-if value="{{ courierUnset }}" hint-placeholder-val="{{ true }}">
+<label for="dm" style="font-size: 13px; font-weight: 700">Asignar domiciliario</label>
+<div style="display: flex; gap: 8px">
+<select id="dm" style="flex: 1; min-height: 44px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1">
+<option>Diego Domiciliario · 1 entrega en curso</option>
+</select>
+<button type="button" onClick="{{ assign }}" style="min-height: 44px; padding: 0 14px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Asignar</button>
+</div>
+</sc-if>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Factura</h2>
+<span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: #DBEAFE; color: #1E40AF">Pendiente de facturar</span>
+<span style="font-size: 14px; color: #334155; line-height: 1.5">El pago está aprobado. La factura la genera el <strong>Encargado de facturación</strong> desde su módulo (RF-041, RN-006).</span>
+</section>
+</div>
+</div>
+</main>
+
+<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 20; background: rgba(15,23,42,0.5); display: flex; align-items: flex-start; justify-content: center; padding: 160px 24px 24px; box-sizing: border-box">
+<div role="dialog" aria-modal="true" aria-labelledby="mt" style="width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 20px 48px rgba(15,23,42,0.3)">
+<h2 id="mt" style="margin: 0; font-size: 20px; font-weight: 800">¿Cancelar el pedido PED-0004?</h2>
+<p style="margin: 0; font-size: 15px; color: #334155; line-height: 1.5">El pedido pasará a estado cancelado, los productos regresan al inventario y esta acción no se puede deshacer.</p>
+<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px">
+<button type="button" onClick="{{ closeModal }}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; font: inherit; font-weight: 700; color: #0F172A; cursor: pointer">No, volver</button>
+<button type="button" onClick="{{ doCancel }}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #B91C1C; color: #FFFFFF; font: inherit; font-weight: 800; cursor: pointer">Sí, cancelar pedido</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; top: 24px; right: 24px; z-index: 30; background: #047857; color: #FFFFFF; padding: 14px 18px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px rgba(15,23,42,0.2)">{{ toastText }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1180}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { idx: 0, cancelled: false, courier: '', modal: false, toast: false, toastText: '',
+      log: [{ when: '25/10 · 8:05 p. m.', what: 'Pedido creado', who: 'Cliente (en línea)' }, { when: '25/10 · 8:07 p. m.', what: 'Pago rechazado', who: 'Tarjeta de crédito' }, { when: '25/10 · 8:09 p. m.', what: 'Pago aprobado', who: 'PSE' }] };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  flash(text, extra) {
+    var self = this;
+    clearTimeout(this.t);
+    this.setState(Object.assign({ toast: true, toastText: text }, extra || {}));
+    this.t = setTimeout(function () { self.setState({ toast: false }); }, 2600);
+  }
+  addLog(what) { return this.state.log.concat([{ when: '09/11 · ahora', what: what, who: 'Sofía Vendedora' }]); }
+  renderVals() {
+    var self = this, s = this.state;
+    var flow = ['Pendiente', 'En preparación', 'En camino', 'Entregado'];
+    var icons = ['iClock', 'iBox', 'iTruck', 'iCheck'];
+    var ST = { 'Pendiente': ['#F1F5F9', '#334155'], 'En preparación': ['#FEF3C7', '#92400E'], 'En camino': ['#DBEAFE', '#1E40AF'], 'Entregado': ['#D1FAE5', '#065F46'], 'Cancelado': ['#FEE2E2', '#991B1B'] };
+    var status = s.cancelled ? 'Cancelado' : flow[s.idx];
+    var canCancel = !s.cancelled && s.idx <= 1;
+    var canAdvance = !s.cancelled && s.idx < 3 && !(s.idx === 1 && !s.courier);
+    var note = '';
+    if (s.cancelled) note = 'Pedido cancelado: ya no admite cambios de estado.';
+    else if (s.idx >= 2) note = 'Un pedido en camino o entregado ya no se puede cancelar (RN-003). El estado solo avanza, nunca retrocede (RN-004).';
+    else if (s.idx === 1 && !s.courier) note = 'Asigna un domiciliario antes de marcar el pedido como en camino (RF-035).';
+    var track = flow.map(function (f, i) {
+      var done = !s.cancelled && (i < s.idx || (i === s.idx && i === 3)), cur = !s.cancelled && i === s.idx && i < 3;
+      var t = { label: f, dotBg: done ? '#2563EB' : (cur ? '#FFFFFF' : '#F1F5F9'), dotColor: done ? '#FFFFFF' : (cur ? '#1D4ED8' : '#64748B'),
+        ring: done || cur ? '#2563EB' : '#CBD5E1', lineBg: i === 3 ? 'transparent' : (!s.cancelled && i < s.idx ? '#2563EB' : '#E2E8F0'),
+        color: done || cur ? '#0F172A' : '#475569', tag: done ? 'Completado' : (cur ? 'Etapa actual' : 'Por realizar'), tagColor: done ? '#065F46' : (cur ? '#1D4ED8' : '#475569'), iX: false };
+      icons.forEach(function (k, j) { t[k] = j === i; });
+      return t;
+    });
+    if (s.cancelled) track = track.slice(0, 1).concat([{ label: 'Cancelado', dotBg: '#B91C1C', dotColor: '#FFFFFF', ring: '#B91C1C', lineBg: 'transparent', color: '#991B1B', tag: 'Pedido cancelado', tagColor: '#991B1B', iX: true, iClock: false, iBox: false, iTruck: false, iCheck: false }]).concat([{ label: '', dotBg: 'transparent', dotColor: 'transparent', ring: 'transparent', lineBg: 'transparent', color: '#475569', tag: '', tagColor: '#475569' }, { label: '', dotBg: 'transparent', dotColor: 'transparent', ring: 'transparent', lineBg: 'transparent', color: '#475569', tag: '', tagColor: '#475569' }]);
+    if (s.cancelled) { track[0].dotBg = '#2563EB'; track[0].dotColor = '#FFFFFF'; track[0].lineBg = '#B91C1C'; track[0].tag = 'Completado'; track[0].tagColor = '#065F46'; }
+    return {
+      status: status, sBg: ST[status][0], sColor: ST[status][1], track: track,
+      crumbs: [{ label: 'Inicio', href: 'VentaPresencial.dc.html' }, { label: 'Pedidos', href: 'Pedidos.dc.html' }, { label: 'PED-0004' }],
+      cannotCancel: !canCancel, cannotAdvance: !canAdvance, locked: s.cancelled || s.idx >= 3,
+      cancelBorder: canCancel ? '#B91C1C' : '#E2E8F0', cancelColor: canCancel ? '#B91C1C' : '#94A3B8', cancelCursor: canCancel ? 'pointer' : 'not-allowed',
+      advLabel: !s.cancelled && s.idx < 3 ? 'Marcar como ' + flow[s.idx + 1].toLowerCase() : 'Sin cambios disponibles',
+      advBg: canAdvance ? '#2563EB' : '#E2E8F0', advColor: canAdvance ? '#FFFFFF' : '#475569', advCursor: canAdvance ? 'pointer' : 'not-allowed',
+      ruleNote: note, log: s.log.slice().reverse(),
+      courier: s.courier, courierSet: !!s.courier, courierUnset: !s.courier,
+      assign: function () { self.flash('Pedido asignado a Diego Domiciliario', { courier: 'Diego Domiciliario', log: self.addLog('Asignado a Diego Domiciliario') }); },
+      unassign: function () { self.setState({ courier: '' }); },
+      advance: function () { if (!canAdvance) return; var nx = flow[s.idx + 1]; self.flash('Estado actualizado a ' + nx.toLowerCase(), { idx: s.idx + 1, log: self.addLog(nx) }); },
+      modal: s.modal,
+      askCancel: function () { if (canCancel) self.setState({ modal: true }); },
+      closeModal: function () { self.setState({ modal: false }); },
+      doCancel: function () { self.flash('Pedido PED-0004 cancelado', { modal: false, cancelled: true, log: self.addLog('Cancelado') }); },
+      toast: s.toast, toastText: s.toastText
+    };
+  }
+}
+</script>
+</body>
+</html>

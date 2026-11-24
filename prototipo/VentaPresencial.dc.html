@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venta presencial y telefónica — Vendedor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="vendedor" active="pos" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Venta presencial o telefónica</h1>
+<p style="margin: 6px 0 0; font-size: 15px; color: #475569">Punto de venta del vendedor: cliente, productos, total y pago en una sola pantalla (RF-015 a RF-022).</p>
+</div>
+<a href="Pedidos.dc.html" style="font-weight: 700; font-size: 15px">Ver pedidos</a>
+</div>
+
+<sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px">
+<span style="width: 60px; height: 60px; border-radius: 999px; background: #D1FAE5; color: #047857; display: flex; align-items: center; justify-content: center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+<h2 style="margin: 0; font-size: 24px; font-weight: 800">Venta registrada: PED-0010</h2>
+<p style="margin: 0; font-size: 15px; color: #334155">{{ doneText }}</p>
+<button type="button" onClick="{{ reset }}" style="min-height: 48px; padding: 0 22px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 800; cursor: pointer">Nueva venta</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ editing }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 800">1. Cliente</h2>
+<sc-if value="{{ hasClient }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 12px; padding: 12px 14px">
+<div><div style="font-weight: 800">{{ client.name }}</div><div style="font-size: 13px; color: #334155">CC {{ client.doc }} · {{ client.phone }}</div></div>
+<button type="button" onClick="{{ clearClient }}" style="min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1.5px solid #93C5FD; background: #FFFFFF; font: inherit; font-weight: 700; font-size: 13px; color: #1E3A8A; cursor: pointer">Cambiar</button>
+</div>
+</sc-if>
+<sc-if value="{{ noClient }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 8px">
+<label for="cd" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Documento del cliente</label>
+<input id="cd" type="text" inputmode="numeric" value="{{ docQ }}" onChange="{{ setDocQ }}" placeholder="Documento (prueba 79876543)" style="flex: 1; min-width: 0; min-height: 44px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1">
+<button type="button" onClick="{{ findClient }}" style="min-height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #0F172A; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Buscar</button>
+</div>
+<sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px; border: 1.5px dashed #CBD5E1; border-radius: 12px; padding: 12px">
+<div role="alert" style="font-size: 14px; font-weight: 700; color: #991B1B">Cliente no encontrado. Regístralo para continuar (RF-015).</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px">
+<input aria-label="Nombre del cliente" type="text" value="{{ newName }}" onChange="{{ setNewName }}" placeholder="Nombre completo" style="min-height: 42px; border-radius: 8px; padding: 0 10px; font: inherit; font-size: 14px; color: #0F172A; border: 1.5px solid #CBD5E1">
+<input aria-label="Teléfono del cliente" type="tel" placeholder="Teléfono" style="min-height: 42px; border-radius: 8px; padding: 0 10px; font: inherit; font-size: 14px; color: #0F172A; border: 1.5px solid #CBD5E1">
+</div>
+<button type="button" onClick="{{ registerClient }}" style="align-self: flex-start; min-height: 40px; padding: 0 14px; border-radius: 8px; border: 1.5px solid #2563EB; background: #FFFFFF; color: #1D4ED8; font: inherit; font-weight: 800; cursor: pointer">Registrar cliente</button>
+</div>
+</sc-if>
+</sc-if>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 800">2. Buscar producto</h2>
+<label for="ps" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar producto por código o nombre</label>
+<input id="ps" type="search" value="{{ pq }}" onChange="{{ setPq }}" placeholder="Código o nombre (RF-018)" style="min-height: 44px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1">
+<sc-for list="{{ results }}" as="r" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid #E2E8F0">
+<div style="min-width: 0"><div style="font-weight: 700; font-size: 14px">{{ r.name }}</div><div style="font-size: 13px; color: #475569">{{ r.code }} · {{ r.price }} · <span style="color: {{ r.stockColor }}; font-weight: 700">{{ r.stockText }}</span></div></div>
+<button type="button" onClick="{{ r.add }}" disabled="{{ r.out }}" aria-label="{{ r.aria }}" style="min-height: 40px; min-width: 88px; padding: 0 12px; border-radius: 8px; font: inherit; font-weight: 700; font-size: 13px; cursor: {{ r.cursor }}; border: {{ r.border }}; background: {{ r.bg }}; color: {{ r.color }}">{{ r.btn }}</button>
+</div>
+</sc-for>
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><div role="status" style="padding: 12px; font-weight: 700; color: #334155">Producto no encontrado</div></sc-if>
+</section>
+</div>
+
+<section aria-label="Venta actual" style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 800">3. Venta actual</h2>
+<div role="group" aria-label="Canal de venta" style="display: flex; background: #F1F5F9; border-radius: 10px; padding: 3px">
+<sc-for list="{{ channels }}" as="c" hint-placeholder-count="2">
+<button type="button" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}" style="min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; color: #0F172A; background: {{ c.bg }}">{{ c.name }}</button>
+</sc-for>
+</div>
+</div>
+<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #E2E8F0">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 700; font-size: 14px">{{ l.name }}</div><div style="font-size: 13px; color: #475569">{{ l.unit }} c/u</div>
+<sc-if value="{{ l.warn }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size: 12px; font-weight: 700; color: #B91C1C">Existencia insuficiente</div></sc-if></div>
+<div style="display: flex; align-items: center; border: 1.5px solid #CBD5E1; border-radius: 8px">
+<button type="button" aria-label="Disminuir cantidad" onClick="{{ l.dec }}" style="width: 36px; height: 36px; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 700; cursor: pointer; color: #0F172A">−</button>
+<span style="min-width: 24px; text-align: center; font-weight: 800">{{ l.qty }}</span>
+<button type="button" aria-label="Aumentar cantidad" onClick="{{ l.inc }}" style="width: 36px; height: 36px; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 700; cursor: pointer; color: #0F172A">+</button>
+</div>
+<span style="width: 96px; text-align: right; font-weight: 800; font-size: 14px">{{ l.total }}</span>
+<button type="button" aria-label="Quitar producto" onClick="{{ l.remove }}" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: #F8FAFC; color: #B91C1C; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+</sc-for>
+<sc-if value="{{ emptySale }}" hint-placeholder-val="{{ false }}"><div role="status" style="border: 1.5px dashed #CBD5E1; border-radius: 12px; padding: 18px; text-align: center; font-size: 14px; font-weight: 600; color: #334155">Agrega productos desde el buscador.</div></sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 4px; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 14px">
+<div style="display: flex; justify-content: space-between"><span style="color: #475569">Subtotal</span><span style="font-weight: 700">{{ subText }}</span></div>
+<div style="display: flex; justify-content: space-between"><span style="color: #475569">IVA 19%</span><span style="font-weight: 700">{{ taxText }}</span></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 15px"><span style="font-weight: 800">Total (RF-022)</span><span style="font-weight: 800; font-size: 26px">{{ totalText }}</span></div>
+</div>
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="da" style="font-weight: 700; font-size: 14px">Dirección de entrega *</label>
+<input id="da" type="text" value="{{ addr }}" onChange="{{ setAddr }}" placeholder="Dirección en Neiva" style="min-height: 44px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1">
+</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="pm" style="font-weight: 700; font-size: 14px">Método de pago</label>
+<select id="pm" style="min-height: 44px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 15px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1"><option>Tarjeta débito</option><option>Tarjeta de crédito</option><option>Transferencia PSE</option></select>
+</div>
+<sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><div role="alert" style="background: #FEE2E2; color: #991B1B; border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 700">{{ err }}</div></sc-if>
+<button type="button" onClick="{{ submit }}" style="min-height: 50px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 800; font-size: 16px; cursor: pointer">Registrar venta (RF-019)</button>
+</section>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; top: 24px; right: 24px; z-index: 10; background: #047857; color: #FFFFFF; padding: 14px 18px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px rgba(15,23,42,0.2)">{{ toastText }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1040}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { client: { name: 'Pedro Ramírez', doc: '79876543', phone: '315 777 8899' }, docQ: '', notFound: false, newName: '', pq: '', channel: 'Presencial', addr: '', err: '', done: false, warn: '', toast: false, toastText: '',
+      lines: [{ code: 'MON-001', qty: 1 }, { code: 'ACC-002', qty: 1 }] };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  flash(text, extra) { var self = this; clearTimeout(this.t); this.setState(Object.assign({ toast: true, toastText: text }, extra || {})); this.t = setTimeout(function () { self.setState({ toast: false }); }, 2400); }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (n) { return '$ ' + Math.round(n).toLocaleString('es-CO'); };
+    var P = [['LAP-001', 'Laptop 14" 16GB RAM', 2500000, 9], ['CEL-001', 'Smartphone 128GB', 1800000, 14], ['MON-001', 'Monitor 24" Full HD', 650000, 8], ['ACC-001', 'Audífonos Bluetooth', 150000, 29], ['ACC-002', 'Mouse inalámbrico', 45000, 47], ['ACC-003', 'Teclado mecánico', 120000, 24], ['ACC-004', 'Funda para celular', 35000, 38], ['ACC-006', 'Base refrigerante para portátil', 89000, 0]];
+    var byCode = {}; P.forEach(function (p) { byCode[p[0]] = p; });
+    var q = s.pq.trim().toLowerCase();
+    var results = P.filter(function (p) { return !q || (p[0] + ' ' + p[1]).toLowerCase().indexOf(q) >= 0; }).slice(0, 5);
+    var setQty = function (code, d) {
+      var w = '';
+      var lines = s.lines.map(function (l) { if (l.code !== code) return l; var n = l.qty + d; if (n > byCode[code][3]) { w = code; return l; } return { code: code, qty: Math.max(1, n) }; });
+      self.setState({ lines: lines, warn: w, err: '' });
+    };
+    var sub = s.lines.reduce(function (a, l) { return a + l.qty * byCode[l.code][2]; }, 0);
+    return {
+      crumbs: [{ label: 'Inicio', href: 'VentaPresencial.dc.html' }, { label: 'Venta presencial' }],
+      done: s.done, editing: !s.done,
+      doneText: 'Cliente ' + (s.client ? s.client.name : '') + ' · canal ' + s.channel.toLowerCase() + ' · ' + fmt(sub * 1.19) + '. El inventario se descontó y el pedido quedó listo para facturar.',
+      reset: function () { self.setState({ done: false, lines: [], client: null, channel: 'Presencial', addr: '' }); },
+      client: s.client || { name: '', doc: '', phone: '' }, hasClient: !!s.client, noClient: !s.client,
+      docQ: s.docQ, notFound: s.notFound, newName: s.newName,
+      setDocQ: function (e) { self.setState({ docQ: e.target.value, notFound: false }); },
+      setNewName: function (e) { self.setState({ newName: e.target.value }); },
+      clearClient: function () { self.setState({ client: null, docQ: '', notFound: false }); },
+      findClient: function () {
+        var d = s.docQ.replace(/\D/g, '');
+        if (d === '79876543') { self.setState({ client: { name: 'Pedro Ramírez', doc: d, phone: '315 777 8899' }, err: '' }); return; }
+        if (d === '1012345678') { self.setState({ client: { name: 'Ana Torres', doc: d, phone: '310 123 4567' }, err: '' }); return; }
+        self.setState({ notFound: true });
+      },
+      registerClient: function () {
+        if (!s.newName.trim() || !s.docQ.trim()) { self.setState({ err: 'Ingresa el documento y el nombre del cliente' }); return; }
+        self.flash('Cliente registrado correctamente', { client: { name: s.newName.trim(), doc: s.docQ.trim(), phone: '—' }, notFound: false, err: '' });
+      },
+      pq: s.pq, setPq: function (e) { self.setState({ pq: e.target.value }); }, noResults: results.length === 0,
+      results: results.map(function (p) {
+        var out = p[3] === 0;
+        return { code: p[0], name: p[1], price: fmt(p[2]), out: out, stockText: out ? 'Agotado' : p[3] + ' disponibles', stockColor: out ? '#991B1B' : (p[3] <= 10 ? '#92400E' : '#065F46'),
+          btn: out ? 'Agotado' : 'Agregar', aria: out ? p[1] + ' agotado' : 'Agregar ' + p[1], cursor: out ? 'not-allowed' : 'pointer',
+          bg: out ? '#F1F5F9' : '#2563EB', color: out ? '#475569' : '#FFFFFF', border: out ? '1.5px dashed #94A3B8' : '0',
+          add: function () {
+            if (out) return;
+            var ex = s.lines.filter(function (l) { return l.code === p[0]; })[0];
+            if (ex) { setQty(p[0], 1); return; }
+            self.setState({ lines: s.lines.concat([{ code: p[0], qty: 1 }]), err: '' });
+          } };
+      }),
+      channels: ['Presencial', 'Telefónico'].map(function (c) { var on = s.channel === c; return { name: c, on: on, bg: on ? '#FFFFFF' : 'transparent', pick: function () { self.setState({ channel: c }); } }; }),
+      isPhone: s.channel === 'Telefónico', addr: s.addr, setAddr: function (e) { self.setState({ addr: e.target.value }); },
+      emptySale: s.lines.length === 0,
+      lines: s.lines.map(function (l) {
+        var p = byCode[l.code];
+        return { name: p[1], unit: fmt(p[2]), qty: l.qty, total: fmt(p[2] * l.qty), warn: s.warn === l.code,
+          inc: function () { setQty(l.code, 1); }, dec: function () { setQty(l.code, -1); },
+          remove: function () { self.setState({ lines: s.lines.filter(function (x) { return x.code !== l.code; }), warn: '' }); } };
+      }),
+      subText: fmt(sub), taxText: fmt(sub * 0.19), totalText: fmt(sub * 1.19),
+      err: s.err,
+      submit: function () {
+        if (!s.client) { self.setState({ err: 'Busca o registra el cliente antes de registrar la venta' }); return; }
+        if (!s.lines.length) { self.setState({ err: 'Agrega al menos un producto a la venta' }); return; }
+        if (s.channel === 'Telefónico' && !s.addr.trim()) { self.setState({ err: 'Ingresa la dirección de entrega para la venta telefónica' }); return; }
+        self.setState({ done: true, err: '' });
+      },
+      toast: s.toast, toastText: s.toastText
+    };
+  }
+}
+</script>
+</body>
+</html>

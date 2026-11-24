@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mis pedidos — TiendaVirtual</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+<dc-import name="ClientNav" active="pedidos" cart-count="0" user="Laura Gómez" hint-size="100%,68px"></dc-import>
+
+<main style="max-width: 1200px; margin: 0 auto; padding: 20px 24px 56px; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Mis pedidos</h1>
+<p style="margin: 6px 0 0; color: #475569; font-size: 15px">Historial de compras y seguimiento de cada entrega.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+<section aria-label="Historial de compras" style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{ orders }}" as="o" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{ o.on }}" onClick="{{ o.pick }}" style="text-align: left; width: 100%; padding: 16px; border-radius: 12px; font: inherit; cursor: pointer; color: #0F172A; display: flex; flex-direction: column; gap: 8px; border: 2px solid {{ o.border }}; background: #FFFFFF">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 800; font-size: 16px">{{ o.id }}</span><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: {{ o.sBg }}; color: {{ o.sColor }}">{{ o.status }}</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; color: #475569"><span>{{ o.date }} · {{ o.units }}</span><span style="font-weight: 800; color: #0F172A">{{ o.total }}</span></div>
+</button>
+</sc-for>
+</section>
+
+<section aria-label="Detalle del pedido" style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px">
+<div>
+<div style="font-size: 13px; color: #475569; font-weight: 700">Pedido</div>
+<h2 style="margin: 2px 0 0; font-size: 26px; font-weight: 800">{{ sel.id }}</h2>
+<div style="font-size: 14px; color: #475569; margin-top: 4px">Realizado el {{ sel.date }} · Canal en línea</div>
+</div>
+<span style="padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 800; background: {{ sel.sBg }}; color: {{ sel.sColor }}">{{ sel.status }}</span>
+</div>
+
+<sc-if value="{{ sel.cancelled }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; gap: 12px; align-items: center; background: #FEE2E2; color: #991B1B; border-radius: 12px; padding: 14px 16px; font-weight: 600; font-size: 14px">
+<span style="width: 32px; height: 32px; flex: none; border-radius: 999px; background: #B91C1C; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+Pedido cancelado el 02/11/2026 a solicitud del cliente. Los productos regresaron al inventario.
+</div>
+</sc-if>
+
+<sc-if value="{{ sel.active }}" hint-placeholder-val="{{ true }}">
+<ol aria-label="Seguimiento del pedido" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<sc-for list="{{ sel.track }}" as="t" hint-placeholder-count="4">
+<li style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center">
+<span style="width: 40px; height: 40px; flex: none; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: {{ t.dotBg }}; color: {{ t.dotColor }}; border: 2px solid {{ t.ring }}">
+<sc-if value="{{ t.iClock }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></sc-if>
+<sc-if value="{{ t.iBox }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg></sc-if>
+<sc-if value="{{ t.iTruck }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg></sc-if>
+<sc-if value="{{ t.iCheck }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+</span>
+<span style="flex: 1; height: 3px; background: {{ t.lineBg }}"></span>
+</div>
+<span style="font-weight: 800; font-size: 14px; color: {{ t.color }}">{{ t.label }}</span>
+<span style="font-size: 13px; color: #475569">{{ t.when }}</span>
+<span style="font-size: 12px; font-weight: 700; color: {{ t.tagColor }}">{{ t.tag }}</span>
+</li>
+</sc-for>
+</ol>
+</sc-if>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px">
+<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px"><div style="font-size: 13px; font-weight: 700; color: #475569">Dirección de entrega</div><div style="font-weight: 700; margin-top: 6px; font-size: 15px">Calle 21 # 8-15, Apto 302</div><div style="font-size: 14px; color: #475569">Neiva · Edificio Mirador</div></div>
+<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px"><div style="font-size: 13px; font-weight: 700; color: #475569">Pago</div><div style="font-weight: 700; margin-top: 6px; font-size: 15px">{{ sel.method }}</div><div style="font-size: 14px; font-weight: 700; color: {{ sel.payColor }}">{{ sel.pay }}</div></div>
+<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px"><div style="font-size: 13px; font-weight: 700; color: #475569">Domiciliario</div><div style="font-weight: 700; margin-top: 6px; font-size: 15px">{{ sel.courier }}</div><div style="font-size: 14px; color: #475569">{{ sel.courierNote }}</div></div>
+</div>
+
+<div>
+<h3 style="margin: 0 0 8px; font-size: 17px; font-weight: 800">Productos</h3>
+<sc-for list="{{ sel.items }}" as="it" hint-placeholder-count="2">
+<div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #E2E8F0; font-size: 15px"><span>{{ it.qty }} × {{ it.name }}</span><span style="font-weight: 700">{{ it.total }}</span></div>
+</sc-for>
+<div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #E2E8F0; font-weight: 800; font-size: 17px"><span>Total con IVA</span><span>{{ sel.total }}</span></div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 'PED-0003' }; }
+  renderVals() {
+    var self = this;
+    var ST = { 'Pendiente': ['#F1F5F9', '#334155'], 'En preparación': ['#FEF3C7', '#92400E'], 'En camino': ['#DBEAFE', '#1E40AF'], 'Entregado': ['#D1FAE5', '#065F46'], 'Cancelado': ['#FEE2E2', '#991B1B'] };
+    var flow = ['Pendiente', 'En preparación', 'En camino', 'Entregado'];
+    var icons = ['iClock', 'iBox', 'iTruck', 'iCheck'];
+    var data = [
+      { id: 'PED-0008', date: '09/11/2026', status: 'Pendiente', total: '$ 321.300', units: '2 productos', method: 'Tarjeta de crédito', pay: 'Aprobado', courier: 'Sin asignar', courierNote: 'Se asigna al despachar', when: ['09/11 · 7:40 p. m.', '', '', ''],
+        items: [{ qty: 1, name: 'Audífonos Bluetooth', total: '$ 150.000' }, { qty: 1, name: 'Teclado mecánico', total: '$ 120.000' }] },
+      { id: 'PED-0007', date: '02/11/2026', status: 'Cancelado', total: '$ 773.500', units: '1 producto', method: 'PSE', pay: 'Reembolsado', courier: 'No aplica', courierNote: '', when: ['', '', '', ''],
+        items: [{ qty: 1, name: 'Monitor 24" Full HD', total: '$ 650.000' }] },
+      { id: 'PED-0006', date: '28/10/2026', status: 'Entregado', total: '$ 53.550', units: '1 producto', method: 'Tarjeta débito', pay: 'Aprobado', courier: 'Diego Domiciliario', courierNote: 'Recibido por Laura Gómez', when: ['28/10', '28/10', '29/10', '29/10 · 4:20 p. m.'],
+        items: [{ qty: 1, name: 'Mouse inalámbrico', total: '$ 45.000' }] },
+      { id: 'PED-0003', date: '20/10/2026', status: 'En camino', total: '$ 2.225.300', units: '3 productos', method: 'PSE', pay: 'Aprobado', courier: 'Diego Domiciliario', courierNote: 'En ruta hacia tu dirección', when: ['20/10 · 9:30 a. m.', '20/10 · 10:30 a. m.', '26/10 · 8:00 a. m.', 'Por confirmar'],
+        items: [{ qty: 1, name: 'Smartphone 128GB', total: '$ 1.800.000' }, { qty: 2, name: 'Funda para celular', total: '$ 70.000' }] }
+    ];
+    var cur = data.filter(function (o) { return o.id === self.state.sel; })[0];
+    var idx = flow.indexOf(cur.status);
+    var sel = Object.assign({}, cur, {
+      sBg: ST[cur.status][0], sColor: ST[cur.status][1],
+      cancelled: cur.status === 'Cancelado', active: cur.status !== 'Cancelado',
+      payColor: cur.pay === 'Aprobado' ? '#065F46' : '#991B1B',
+      track: flow.map(function (f, i) {
+        var done = i < idx || (i === idx && i === 3), current = i === idx && i < 3;
+        var t = { label: f, when: cur.when[i] || 'Pendiente',
+          dotBg: done ? '#2563EB' : (current ? '#FFFFFF' : '#F1F5F9'),
+          dotColor: done ? '#FFFFFF' : (current ? '#1D4ED8' : '#64748B'),
+          ring: done ? '#2563EB' : (current ? '#2563EB' : '#CBD5E1'),
+          lineBg: i === 3 ? 'transparent' : (i < idx ? '#2563EB' : '#E2E8F0'),
+          color: done || current ? '#0F172A' : '#475569',
+          tag: done ? 'Completado' : (current ? 'Etapa actual' : 'Por realizar'),
+          tagColor: done ? '#065F46' : (current ? '#1D4ED8' : '#475569') };
+        icons.forEach(function (k, j) { t[k] = j === i; });
+        return t;
+      })
+    });
+    return {
+      sel: sel,
+      crumbs: [{ label: 'Inicio', href: 'Main.dc.html' }, { label: 'Mis pedidos', href: 'Seguimiento.dc.html' }, { label: cur.id }],
+      orders: data.map(function (o) {
+        var on = o.id === self.state.sel;
+        return { id: o.id, date: o.date, units: o.units, total: o.total, status: o.status, on: on,
+          sBg: ST[o.status][0], sColor: ST[o.status][1], border: on ? '#2563EB' : '#E2E8F0',
+          pick: function () { self.setState({ sel: o.id }); } };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

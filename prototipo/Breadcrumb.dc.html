@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Componente: migas de pan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<nav aria-label="Ruta de navegación" style="font-family: Inter, system-ui, sans-serif; font-size: 14px">
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px">
+<sc-for list="{{ crumbs }}" as="c" hint-placeholder-count="3">
+<li style="display: flex; align-items: center; gap: 6px">
+<sc-if value="{{ c.sep }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></sc-if>
+<sc-if value="{{ c.link }}" hint-placeholder-val="{{ true }}"><a href="{{ c.href }}" style="color: #1D4ED8; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">{{ c.label }}</a></sc-if>
+<sc-if value="{{ c.current }}" hint-placeholder-val="{{ false }}"><span aria-current="page" style="color: #0F172A; font-weight: 700">{{ c.label }}</span></sc-if>
+</li>
+</sc-for>
+</ol>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"items":{"editor":null},"$preview":{"width":600,"height":24}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var items = this.props.items || [{ label: 'Inicio', href: 'Main.dc.html' }, { label: 'Sección', href: 'Main.dc.html' }, { label: 'Actual' }];
+    var n = items.length;
+    return {
+      crumbs: items.map(function (it, i) {
+        var last = i === n - 1;
+        return { label: it.label, href: it.href || '#', sep: i > 0, link: !last && !!it.href, current: last || !it.href };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

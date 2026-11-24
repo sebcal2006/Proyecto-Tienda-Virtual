@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo — TiendaVirtual</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+button:disabled{cursor:not-allowed}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A">
+<dc-import name="ClientNav" active="catalogo" cart-count="{{ cartCount }}" user="Laura Gómez" q="{{ q }}" on-q="{{ setQ }}" hint-size="100%,68px"></dc-import>
+
+<main style="max-width: 1200px; margin: 0 auto; padding: 20px 24px 56px; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">{{ heading }}</h1>
+<p style="margin: 6px 0 0; color: #475569; font-size: 15px">{{ resultText }}</p>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<label for="ord" style="font-size: 14px; font-weight: 700">Ordenar por</label>
+<select id="ord" value="{{ sort }}" onChange="{{ setSort }}" style="min-height: 44px; border-radius: 10px; border: 1.5px solid #CBD5E1; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #0F172A">
+<option value="rel">Relevancia</option>
+<option value="asc">Precio: menor a mayor</option>
+<option value="desc">Precio: mayor a menor</option>
+</select>
+</div>
+</div>
+
+<div role="group" aria-label="Filtrar por categoría" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}" style="min-height: 44px; padding: 0 18px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; border: 1.5px solid {{ c.border }}; background: {{ c.bg }}; color: {{ c.color }}">{{ c.name }}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px">
+<sc-for list="{{ products }}" as="p" hint-placeholder-count="8">
+<article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column">
+<div style="height: 140px; display: flex; align-items: center; justify-content: center; color: #64748B; background: #F1F5F9"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 17l-5-5-9 8"></path></svg></div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1">
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em">{{ p.cat }}</span><span style="font-size: 12px; color: #475569">{{ p.code }}</span></div>
+<h2 style="margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3">{{ p.name }}</h2>
+<span style="font-size: 13px; color: #475569">{{ p.desc }}</span>
+<span style="font-size: 20px; font-weight: 800">{{ p.priceText }}</span>
+<span style="align-self: flex-start; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{ p.sBg }}; color: {{ p.sColor }}">{{ p.stockText }}</span>
+<button type="button" onClick="{{ p.add }}" disabled="{{ p.out }}" aria-disabled="{{ p.out }}" style="margin-top: auto; min-height: 44px; border-radius: 10px; font: inherit; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: {{ p.cursor }}; background: {{ p.btnBg }}; color: {{ p.btnColor }}; border: {{ p.btnBorder }}">
+<sc-if value="{{ p.out }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></sc-if>
+{{ p.btnText }}</button>
+</div>
+</article>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="background: #FFFFFF; border: 1.5px dashed #CBD5E1; border-radius: 16px; padding: 56px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+<span style="width: 56px; height: 56px; border-radius: 14px; background: #F1F5F9; color: #475569; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>
+<h2 style="margin: 0; font-size: 20px; font-weight: 800">No se encontraron productos para tu búsqueda</h2>
+<p style="margin: 0; color: #475569; font-size: 15px">Revisa la ortografía o prueba con otra categoría.</p>
+<button type="button" onClick="{{ clear }}" style="min-height: 44px; padding: 0 20px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; color: #0F172A">Limpiar filtros</button>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; top: 84px; right: 24px; z-index: 10; display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px rgba(15,23,42,0.2); background: #047857; color: #FFFFFF">
+{{ toastText }} <a href="Compra.dc.html" style="color: #FFFFFF">Ver carrito</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', cat: 'Todas', sort: 'rel', cart: 2, toast: false, toastText: '' }; }
+  componentWillUnmount() { clearTimeout(this.t); }
+  renderVals() {
+    var self = this, s = this.state;
+    var fmt = function (n) { return '$ ' + n.toLocaleString('es-CO'); };
+    var all = [
+      { code: 'LAP-001', name: 'Laptop 14" 16GB RAM', desc: 'Portátil para oficina y estudio', cat: 'Computadores', price: 2500000, stock: 9 },
+      { code: 'CEL-001', name: 'Smartphone 128GB', desc: 'Teléfono inteligente gama media', cat: 'Celulares', price: 1800000, stock: 14 },
+      { code: 'MON-001', name: 'Monitor 24" Full HD', desc: 'Monitor IPS 75 Hz', cat: 'Monitores', price: 650000, stock: 8 },
+      { code: 'ACC-001', name: 'Audífonos Bluetooth', desc: 'Inalámbricos con micrófono', cat: 'Accesorios', price: 150000, stock: 29 },
+      { code: 'ACC-002', name: 'Mouse inalámbrico', desc: 'Mouse óptico 2.4 GHz', cat: 'Accesorios', price: 45000, stock: 47 },
+      { code: 'ACC-003', name: 'Teclado mecánico', desc: 'Teclado mecánico retroiluminado', cat: 'Accesorios', price: 120000, stock: 24 },
+      { code: 'ACC-004', name: 'Funda para celular', desc: 'Funda de silicona', cat: 'Accesorios', price: 35000, stock: 38 },
+      { code: 'ACC-006', name: 'Base refrigerante para portátil', desc: 'Dos ventiladores, USB', cat: 'Accesorios', price: 89000, stock: 0 }
+    ];
+    var q = s.q.trim().toLowerCase();
+    var list = all.filter(function (p) {
+      return (s.cat === 'Todas' || p.cat === s.cat) && (!q || (p.name + ' ' + p.cat + ' ' + p.code).toLowerCase().indexOf(q) >= 0);
+    });
+    if (s.sort === 'asc') list.sort(function (a, b) { return a.price - b.price; });
+    if (s.sort === 'desc') list.sort(function (a, b) { return b.price - a.price; });
+    var products = list.map(function (p) {
+      var out = p.stock === 0, low = !out && p.stock <= 10;
+      return {
+        code: p.code, name: p.name, desc: p.desc, cat: p.cat, out: out, priceText: fmt(p.price),
+        stockText: out ? 'Agotado' : (low ? 'Últimas ' + p.stock + ' unidades' : 'Disponible'),
+        sBg: out ? '#F1F5F9' : (low ? '#FEF3C7' : '#D1FAE5'), sColor: out ? '#334155' : (low ? '#92400E' : '#065F46'),
+        btnText: out ? 'Agotado' : 'Agregar al carrito',
+        btnBg: out ? '#F1F5F9' : '#2563EB', btnColor: out ? '#475569' : '#FFFFFF',
+        btnBorder: out ? '1.5px dashed #94A3B8' : '0', cursor: out ? 'not-allowed' : 'pointer',
+        add: function () {
+          if (out) return;
+          clearTimeout(self.t);
+          self.setState({ toast: true, toastText: p.name + ' agregado al carrito', cart: self.state.cart + 1 });
+          self.t = setTimeout(function () { self.setState({ toast: false }); }, 2600);
+        }
+      };
+    });
+    var cats = ['Todas', 'Computadores', 'Celulares', 'Monitores', 'Accesorios'].map(function (c) {
+      var on = s.cat === c;
+      return { name: c, on: on, bg: on ? '#0F172A' : '#FFFFFF', color: on ? '#FFFFFF' : '#0F172A', border: on ? '#0F172A' : '#CBD5E1',
+        pick: function () { self.setState({ cat: c }); } };
+    });
+    var crumbs = [{ label: 'Inicio', href: 'Main.dc.html' }];
+    if (s.cat === 'Todas') crumbs.push({ label: 'Catálogo' });
+    else { crumbs.push({ label: 'Catálogo', href: 'Catalogo.dc.html' }); crumbs.push({ label: s.cat }); }
+    return {
+      q: s.q, sort: s.sort, cartCount: s.cart, cats: cats, products: products, crumbs: crumbs,
+      heading: s.cat === 'Todas' ? 'Catálogo de productos' : s.cat,
+      hasResults: products.length > 0, noResults: products.length === 0,
+      resultText: products.length + (products.length === 1 ? ' producto activo' : ' productos activos'),
+      setQ: function (e) { self.setState({ q: e.target.value }); },
+      setSort: function (e) { self.setState({ sort: e.target.value }); },
+      clear: function () { self.setState({ q: '', cat: 'Todas' }); },
+      toast: s.toast, toastText: s.toastText
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipo Tienda Virtual — Grupo 03</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F172A;--muted:#475569;--line:#E2E8F0;--blue:#2563EB;--blue-d:#1D4ED8;--bg:#F8FAFC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}
+header{background:var(--ink);color:#fff}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header .wrap{padding-top:36px;padding-bottom:32px}
+.kicker{color:#93C5FD;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+h1{margin:8px 0 8px;font-size:34px;line-height:1.15}
+header p{margin:0;color:#CBD5E1;max-width:720px;line-height:1.55}
+.cta{display:inline-flex;margin-top:18px;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;text-decoration:none}
+.btn.ghost{background:transparent;border:1.5px solid #64748B}
+main .wrap{padding-top:28px;padding-bottom:48px}
+h2{font-size:20px;margin:28px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:4px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink)}
+.card:hover{border-color:var(--blue)}
+.card b{font-size:15px}
+.card span{font-size:13px;color:var(--muted)}
+.role{display:inline-block;align-self:flex-start;margin-bottom:2px;padding:2px 8px;border-radius:999px;background:#EFF6FF;color:#1E3A8A;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--line)}
+th{background:#F1F5F9;color:var(--muted);border-top:0}
+code{background:#F1F5F9;padding:2px 6px;border-radius:6px;font-size:13px}
+.tbl{overflow-x:auto}
+footer{color:var(--muted);font-size:13px;margin-top:28px}
+a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="kicker">SENA · ADSO · Ficha 3239188 · Grupo 03</div>
+<h1>Prototipo navegable — Tienda Virtual</h1>
+<p>Mockup de la Fase 5 (versión 2). Funciona en cualquier navegador sin iniciar sesión: los usuarios, productos y pedidos de prueba están dentro de cada pantalla.</p>
+<div class="cta"><a class="btn" href="Main.dc.html">Empezar en Inicio</a><a class="btn ghost" href="Login.dc.html">Ir al Login</a></div>
+</div></header>
+<main><div class="wrap">
+
+<h2>Cuentas de prueba</h2>
+<div class="tbl"><table>
+<thead><tr><th>Correo</th><th>Contraseña</th><th>Llega a</th></tr></thead>
+<tbody>
+<tr><td><code>admin@tienda.com</code></td><td><code>Tienda123</code></td><td>Dashboard (Administrador)</td></tr>
+<tr><td><code>vendedor@tienda.com</code></td><td><code>Tienda123</code></td><td>Venta presencial (Vendedor)</td></tr>
+<tr><td><code>inventario@tienda.com</code></td><td><code>Tienda123</code></td><td>Existencias (Encargado de inventario)</td></tr>
+<tr><td><code>facturacion@tienda.com</code></td><td><code>Tienda123</code></td><td>Facturas (Encargado de facturación)</td></tr>
+<tr><td><code>domiciliario@tienda.com</code></td><td><code>Tienda123</code></td><td>Mis entregas (Domiciliario)</td></tr>
+<tr><td><code>laura.gomez@correo.com</code></td><td><code>Cliente123</code></td><td>Catálogo (Cliente)</td></tr>
+<tr><td><code>inactivo@tienda.com</code></td><td>cualquiera</td><td>Mensaje "Esta cuenta se encuentra inactiva"</td></tr>
+</tbody></table></div>
+
+<h2>Canal en línea · Cliente</h2>
+<div class="grid">
+<a class="card" href="Main.dc.html"><span class="role">Visitante</span><b>1 · Inicio</b><span>RF-008, RF-023</span></a>
+<a class="card" href="Login.dc.html"><span class="role">Todos</span><b>2 · Login y registro</b><span>RF-001, RF-004</span></a>
+<a class="card" href="Catalogo.dc.html"><span class="role">Cliente</span><b>3 · Catálogo y búsqueda</b><span>RF-008, RF-009</span></a>
+<a class="card" href="Compra.dc.html"><span class="role">Cliente</span><b>4 · Carrito y checkout</b><span>RF-023 a RF-027, RF-032 a RF-034</span></a>
+<a class="card" href="Seguimiento.dc.html"><span class="role">Cliente</span><b>5 · Mis pedidos y seguimiento</b><span>RF-039, RF-040</span></a>
+</div>
+
+<h2>Back-office · Vistas por rol</h2>
+<div class="grid">
+<a class="card" href="Dashboard.dc.html"><span class="role">Administrador</span><b>6 · Dashboard</b><span>RF-013, RF-028</span></a>
+<a class="card" href="Pedidos.dc.html"><span class="role">Administrador</span><b>7 · Listado de pedidos</b><span>RF-028</span></a>
+<a class="card" href="PedidoDetalle.dc.html"><span class="role">Vendedor</span><b>8 · Detalle de pedido</b><span>RF-029 a RF-031, RF-035</span></a>
+<a class="card" href="VentaPresencial.dc.html"><span class="role">Vendedor</span><b>9 · Venta presencial / telefónica</b><span>RF-015, RF-016, RF-018 a RF-022</span></a>
+<a class="card" href="ProductoForm.dc.html"><span class="role">Administrador</span><b>10 · Formulario de producto</b><span>RF-005 a RF-007</span></a>
+<a class="card" href="Inventario.dc.html"><span class="role">Enc. inventario</span><b>11 · Existencias</b><span>RF-010, RF-013</span></a>
+<a class="card" href="Movimientos.dc.html"><span class="role">Enc. inventario</span><b>12 · Movimientos con motivo</b><span>RF-011, RF-012, RF-014</span></a>
+<a class="card" href="Facturas.dc.html"><span class="role">Facturación y Admin</span><b>13 · Facturas</b><span>RF-041, RF-042</span></a>
+<a class="card" href="Domiciliario.dc.html"><span class="role">Domiciliario</span><b>14 · Mis entregas (móvil)</b><span>RF-036 a RF-038</span></a>
+</div>
+
+<h2>Documentación del diseño</h2>
+<div class="grid">
+<a class="card" href="Mapa.dc.html"><b>0 · Estructura de navegación por rol</b><span>Mapa del sitio y componentes compartidos</span></a>
+<a class="card" href="Mensajes.dc.html"><b>15 · Mensajes de error y confirmación</b><span>Guía con los textos de los criterios de aceptación</span></a>
+</div>
+
+<footer>Datos de ejemplo tomados del script SQL de la Fase 4. Desde cualquier pantalla, el botón "Índice de pantallas" (abajo a la izquierda) vuelve aquí.</footer>
+</div></main>
+</body>
+</html>

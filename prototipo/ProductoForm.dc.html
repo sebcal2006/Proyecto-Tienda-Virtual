@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registrar producto — Back-office</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="admin" active="productos" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Registrar producto</h1>
+<p style="margin: 6px 0 0; font-size: 15px; color: #475569">Los campos con * son obligatorios. El producto se crea con existencia 0; el stock se carga desde Movimientos de inventario.</p>
+</div>
+
+<sc-if value="{{ banner }}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="border-radius: 12px; padding: 12px 14px; font-weight: 700; font-size: 14px; background: {{ bannerBg }}; color: {{ bannerColor }}">{{ banner }}</div>
+</sc-if>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<form style="flex: 2 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="fc" style="font-weight: 700; font-size: 14px">Código *</label>
+<input id="fc" type="text" value="{{ code }}" onChange="{{ setCode }}" placeholder="ACC-007" style="min-height: 46px; border-radius: 10px; padding: 0 14px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid {{ codeBorder }}">
+<span style="font-size: 13px; font-weight: 600; color: {{ codeHintColor }}">{{ codeHint }}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="fk" style="font-weight: 700; font-size: 14px">Categoría *</label>
+<select id="fk" value="{{ cat }}" onChange="{{ setCat }}" style="min-height: 46px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; background: #FFFFFF; color: #0F172A; border: 1.5px solid {{ catBorder }}">
+<option value="">Selecciona una categoría</option><option value="Computadores">Computadores</option><option value="Celulares">Celulares</option><option value="Monitores">Monitores</option><option value="Accesorios">Accesorios</option>
+</select>
+<sc-if value="{{ catErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #B91C1C">Selecciona una categoría</span></sc-if>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="fn" style="font-weight: 700; font-size: 14px">Nombre del producto *</label>
+<input id="fn" type="text" value="{{ name }}" onChange="{{ setName }}" placeholder="Ej.: Cargador USB-C 65W" style="min-height: 46px; border-radius: 10px; padding: 0 14px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid {{ nameBorder }}">
+<sc-if value="{{ nameErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #B91C1C">Ingresa el nombre del producto</span></sc-if>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="fp" style="font-weight: 700; font-size: 14px">Precio de venta antes de IVA (COP) *</label>
+<input id="fp" type="number" min="0" value="{{ price }}" onChange="{{ setPrice }}" placeholder="0" style="min-height: 46px; border-radius: 10px; padding: 0 14px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid {{ priceBorder }}">
+<sc-if value="{{ priceErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #B91C1C">El precio debe ser mayor que 0</span></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 700; font-size: 14px">Existencia inicial</span>
+<div style="min-height: 46px; border-radius: 10px; padding: 0 14px; display: flex; align-items: center; background: #F1F5F9; color: #334155; font-size: 15px; cursor: not-allowed">0 unidades</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="fd" style="font-weight: 700; font-size: 14px">Descripción</label>
+<textarea id="fd" rows="4" placeholder="Características principales: potencia, compatibilidad, garantía…" style="border-radius: 10px; padding: 12px 14px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid #CBD5E1; resize: vertical"></textarea>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 700; font-size: 14px">Imagen</span>
+<button type="button" style="min-height: 96px; border-radius: 12px; border: 2px dashed #CBD5E1; background: #F8FAFC; font: inherit; font-size: 14px; font-weight: 600; color: #334155; cursor: pointer">Arrastra una imagen o haz clic para subirla (JPG o PNG)</button>
+</div>
+<label style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; cursor: pointer">
+<input type="checkbox" checked="{{ active }}" onChange="{{ setActive }}" style="width: 20px; height: 20px">
+Producto activo (visible en el catálogo)
+</label>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #E2E8F0">
+<a href="Dashboard.dc.html" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1.5px solid #CBD5E1; color: #0F172A; font-weight: 700; text-decoration: none">Cancelar</a>
+<button type="button" onClick="{{ save }}" style="min-height: 48px; padding: 0 24px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 800; font-size: 16px; cursor: pointer">Guardar producto</button>
+</div>
+</form>
+
+<aside aria-label="Vista previa" style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.05em">Vista previa en el catálogo</span>
+<article style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden">
+<div style="height: 140px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 13px; font-weight: 600">Imagen del producto</div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between"><span style="font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em">{{ pvCat }}</span><span style="font-size: 12px; color: #475569">{{ pvCode }}</span></div>
+<span style="font-size: 16px; font-weight: 700">{{ pvName }}</span>
+<span style="font-size: 20px; font-weight: 800">{{ pvPrice }}</span>
+<span style="align-self: flex-start; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #F1F5F9; color: #334155">{{ pvState }}</span>
+</div>
+</article>
+<p style="margin: 0; font-size: 13px; color: #475569">Prueba con el código LAP-001 para ver el error de código duplicado.</p>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { code: '', name: '', cat: '', price: '', active: true, codeErr: '', nameErr: false, catErr: false, priceErr: false, banner: null }; }
+  renderVals() {
+    var self = this, s = this.state;
+    var taken = ['LAP-001', 'CEL-001', 'MON-001', 'ACC-001', 'ACC-002', 'ACC-003', 'ACC-004', 'ACC-005', 'ACC-006'];
+    var p = parseInt(s.price, 10), b = s.banner;
+    return {
+      code: s.code, name: s.name, cat: s.cat, price: s.price, active: s.active,
+      crumbs: [{ label: 'Inicio', href: 'Dashboard.dc.html' }, { label: 'Productos', href: 'ProductoForm.dc.html' }, { label: 'Nuevo producto' }],
+      codeBorder: s.codeErr ? '#B91C1C' : '#CBD5E1', nameBorder: s.nameErr ? '#B91C1C' : '#CBD5E1', catBorder: s.catErr ? '#B91C1C' : '#CBD5E1', priceBorder: s.priceErr ? '#B91C1C' : '#CBD5E1',
+      codeHint: s.codeErr || 'Único por producto. Formato: LAP-, CEL-, MON- o ACC- y tres dígitos', codeHintColor: s.codeErr ? '#B91C1C' : '#475569',
+      nameErr: s.nameErr, catErr: s.catErr, priceErr: s.priceErr,
+      banner: b ? b.text : '', bannerBg: b && b.ok ? '#D1FAE5' : '#FEE2E2', bannerColor: b && b.ok ? '#065F46' : '#991B1B',
+      pvCat: s.cat || 'Categoría', pvCode: s.code || 'Código', pvName: s.name || 'Nombre del producto', pvPrice: p > 0 ? '$ ' + p.toLocaleString('es-CO') : '$ 0',
+      pvState: s.active ? 'Sin existencia hasta cargar stock' : 'Inactivo · oculto del catálogo',
+      setCode: function (e) { self.setState({ code: e.target.value.toUpperCase(), codeErr: '' }); },
+      setName: function (e) { self.setState({ name: e.target.value, nameErr: false }); },
+      setCat: function (e) { self.setState({ cat: e.target.value, catErr: false }); },
+      setPrice: function (e) { self.setState({ price: e.target.value, priceErr: false }); },
+      setActive: function (e) { self.setState({ active: e.target.checked }); },
+      save: function () {
+        var c = s.code.trim();
+        var ce = !c ? 'Ingresa el código del producto' : (taken.indexOf(c) >= 0 ? 'Ya existe un producto con este código' : '');
+        var ne = !s.name.trim(), ke = !s.cat, pe = !(p > 0);
+        if (ce || ne || ke || pe) {
+          self.setState({ codeErr: ce, nameErr: ne, catErr: ke, priceErr: pe, banner: { text: ce === 'Ya existe un producto con este código' ? 'No se guardó: ya existe un producto con este código.' : 'Revisa los campos marcados en rojo.' } });
+          return;
+        }
+        self.setState({ code: '', name: '', cat: '', price: '', active: true, banner: { ok: true, text: 'Producto ' + c + ' registrado correctamente con existencia 0.' } });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
