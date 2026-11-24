@@ -10,9 +10,11 @@
 
 ## 🔗 Prototipo navegable
 
-### 👉 [Abrir el mockup interactivo](https://claude.ai/artifact/N13mHTbbtcnF7Y1WYjJyyc)
+### 👉 [Abrir el prototipo (sin cuenta)](https://sebcal2006.github.io/Proyecto-Tienda-Virtual/prototipo/)
 
-Abra el enlace y presione **Play** sobre la pantalla **1 · Inicio** o **2 · Login**. Las pantallas están enlazadas entre sí, y los formularios, filtros y mensajes funcionan.
+Funciona en cualquier navegador y celular **sin iniciar sesión**. Los usuarios, productos y pedidos de prueba están escritos dentro de cada pantalla. La página de inicio del enlace es un índice con todas las pantallas por rol; desde cualquier pantalla, el botón **"Índice de pantallas"** vuelve a él. El código está en la carpeta [`prototipo/`](prototipo/) del repositorio.
+
+*Versión de diseño (lienzo de Claude, requiere iniciar sesión en Claude): [abrir lienzo](https://claude.ai/artifact/N13mHTbbtcnF7Y1WYjJyyc).*
 
 **Cuentas de prueba** (las mismas de la tabla `users` del script SQL)
 

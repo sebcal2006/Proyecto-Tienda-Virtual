@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Administrador</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="admin" active="dashboard" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+<div>
+<div style="font-size: 14px; color: #475569; font-weight: 600">Lunes, 9 de noviembre de 2026</div>
+<h1 style="margin: 4px 0 0; font-size: 30px; font-weight: 800">Hola, Carlos</h1>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+<span style="font-size: 12px; font-weight: 700; color: #92400E; background: #FEF3C7; padding: 6px 10px; border-radius: 999px">Datos de ejemplo</span>
+<a href="Facturas.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFFFFF; color: #0F172A; font-weight: 700; text-decoration: none; font-size: 15px">Ver facturas</a>
+<a href="ProductoForm.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 10px; background: #2563EB; color: #FFFFFF; font-weight: 700; text-decoration: none; font-size: 15px">+ Nuevo producto</a>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+<a href="{{ k.href }}" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: #0F172A">
+<span style="font-size: 14px; font-weight: 700; color: #475569">{{ k.label }}</span>
+<span style="font-size: 30px; font-weight: 800; letter-spacing: -0.01em">{{ k.value }}</span>
+<span style="font-size: 13px; font-weight: 600; color: {{ k.noteColor }}">{{ k.note }}</span>
+</a>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<section style="flex: 2 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; box-sizing: border-box">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 16px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">Ventas de los últimos 7 días (millones COP)</h2>
+<div style="display: flex; gap: 16px; font-size: 13px; font-weight: 600; color: #334155">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #2563EB"></span>En línea</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #93C5FD"></span>Presencial</span>
+</div>
+</div>
+<div role="img" aria-label="Ventas diarias por canal, últimos 7 días" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; align-items: end; height: 200px">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="7">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end">
+<span style="font-size: 12px; font-weight: 700; color: #334155">{{ b.label }}</span>
+<div style="width: 100%; max-width: 44px; display: flex; flex-direction: column; gap: 2px">
+<div style="background: #2563EB; border-radius: 6px 6px 0 0; height: {{ b.online }}px"></div>
+<div style="background: #93C5FD; height: {{ b.store }}px"></div>
+</div>
+<span style="font-size: 13px; font-weight: 600; color: #475569">{{ b.day }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="flex: 1 1 280px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 18px; font-weight: 800">Stock bajo (≤ 10)</h2><a href="Inventario.dc.html" style="font-size: 14px; font-weight: 700">Ver inventario</a></div>
+<sc-for list="{{ low }}" as="l" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid #E2E8F0">
+<div><div style="font-weight: 700; font-size: 15px">{{ l.name }}</div><div style="font-size: 13px; color: #475569">{{ l.code }}</div></div>
+<span style="padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; background: {{ l.bg }}; color: {{ l.color }}">{{ l.stock }}</span>
+</div>
+</sc-for>
+</section>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; box-sizing: border-box">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px"><h2 style="margin: 0; font-size: 18px; font-weight: 800">Pedidos recientes</h2><a href="Pedidos.dc.html" style="font-size: 14px; font-weight: 700">Ver todos</a></div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px">
+<thead><tr style="text-align: left; color: #475569">
+<th scope="col" style="padding: 10px 8px; font-weight: 700">Pedido</th><th scope="col" style="padding: 10px 8px; font-weight: 700">Cliente</th><th scope="col" style="padding: 10px 8px; font-weight: 700">Canal</th><th scope="col" style="padding: 10px 8px; font-weight: 700; text-align: right">Total</th><th scope="col" style="padding: 10px 8px; font-weight: 700">Estado</th><th scope="col" style="padding: 10px 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Acción</span></th>
+</tr></thead>
+<tbody>
+<sc-for list="{{ recent }}" as="r" hint-placeholder-count="5">
+<tr style="border-top: 1px solid #E2E8F0">
+<td style="padding: 12px 8px; font-weight: 800">{{ r.id }}</td><td style="padding: 12px 8px">{{ r.client }}</td><td style="padding: 12px 8px">{{ r.channel }}</td><td style="padding: 12px 8px; text-align: right; font-weight: 700">{{ r.total }}</td>
+<td style="padding: 12px 8px"><span style="padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: {{ r.bg }}; color: {{ r.color }}">{{ r.status }}</span></td>
+<td style="padding: 12px 8px; text-align: right"><a href="PedidoDetalle.dc.html" style="font-weight: 700">Ver detalle</a></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var ST = { 'Pendiente': ['#F1F5F9', '#334155'], 'En preparación': ['#FEF3C7', '#92400E'], 'En camino': ['#DBEAFE', '#1E40AF'], 'Entregado': ['#D1FAE5', '#065F46'], 'Cancelado': ['#FEE2E2', '#991B1B'] };
+    var days = [['Mar', 4.1, 1.2], ['Mié', 2.6, 0.9], ['Jue', 3.8, 1.6], ['Vie', 5.2, 2.1], ['Sáb', 6.0, 2.4], ['Dom', 2.2, 0.5], ['Lun', 3.4, 1.3]];
+    var max = 8.6;
+    var rec = [
+      ['PED-0008', 'Laura Gómez', 'En línea', '$ 321.300', 'Pendiente'],
+      ['PED-0004', 'Ana Torres', 'En línea', '$ 178.500', 'Pendiente'],
+      ['PED-0003', 'Laura Gómez', 'En línea', '$ 2.225.300', 'En camino'],
+      ['PED-0002', 'Pedro Ramírez', 'Presencial', '$ 196.350', 'Entregado'],
+      ['PED-0005', 'Pedro Ramírez', 'Presencial', '$ 773.500', 'Cancelado']
+    ];
+    return {
+      kpis: [
+        { label: 'Ventas del mes', value: '$ 24,6 M', note: '48 pedidos', noteColor: '#475569', href: 'Pedidos.dc.html' },
+        { label: 'Por despachar', value: '2', note: 'Pendientes o en preparación', noteColor: '#92400E', href: 'Pedidos.dc.html' },
+        { label: 'Por facturar', value: '1', note: 'Pago aprobado sin factura', noteColor: '#1E40AF', href: 'Facturas.dc.html' },
+        { label: 'Stock bajo', value: '3', note: '1 agotado', noteColor: '#991B1B', href: 'Inventario.dc.html' }
+      ],
+      bars: days.map(function (d) {
+        return { day: d[0], label: (d[1] + d[2]).toFixed(1).replace('.', ','), online: Math.round(d[1] / max * 160), store: Math.round(d[2] / max * 160) };
+      }),
+      low: [
+        { name: 'Base refrigerante para portátil', code: 'ACC-006', stock: 'Agotado', bg: '#FEE2E2', color: '#991B1B' },
+        { name: 'Monitor 24" Full HD', code: 'MON-001', stock: '8 und.', bg: '#FEF3C7', color: '#92400E' },
+        { name: 'Laptop 14" 16GB RAM', code: 'LAP-001', stock: '9 und.', bg: '#FEF3C7', color: '#92400E' }
+      ],
+      recent: rec.map(function (r) { return { id: r[0], client: r[1], channel: r[2], total: r[3], status: r[4], bg: ST[r[4]][0], color: ST[r[4]][1] }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

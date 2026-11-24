@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movimientos de inventario</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F8FAFC}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid #2563EB;outline-offset:2px}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; background: #F8FAFC; font-family: Inter, system-ui, sans-serif; color: #0F172A; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 1 1 230px; max-width: 100%; background: #0F172A"><dc-import name="BackNav" role="inventario" active="movimientos" hint-size="100%,900px"></dc-import></div>
+
+<main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<dc-import name="Breadcrumb" items="{{ crumbs }}" hint-size="100%,24px"></dc-import>
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800">Movimientos de inventario</h1>
+<p style="margin: 6px 0 0; font-size: 15px; color: #475569">Registro de entradas y salidas con motivo (RF-011, RF-012) e historial (RF-014). Las salidas por venta se registran solas al confirmar cada pedido.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+<form aria-label="Registrar movimiento" style="flex: 1 1 300px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">Registrar movimiento</h2>
+<div role="group" aria-label="Tipo de movimiento" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #F1F5F9; border-radius: 10px; padding: 4px">
+<button type="button" aria-pressed="{{ isIn }}" onClick="{{ setIn }}" style="min-height: 42px; border: 0; border-radius: 8px; font: inherit; font-weight: 700; cursor: pointer; color: {{ inColor }}; background: {{ inBg }}">↓ Entrada</button>
+<button type="button" aria-pressed="{{ isOut }}" onClick="{{ setOut }}" style="min-height: 42px; border: 0; border-radius: 8px; font: inherit; font-weight: 700; cursor: pointer; color: {{ outColor }}; background: {{ outBg }}">↑ Salida</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="mp" style="font-weight: 700; font-size: 14px">Producto *</label>
+<select id="mp" value="{{ mProd }}" onChange="{{ setProd }}" style="min-height: 46px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1">
+<sc-for list="{{ options }}" as="o" hint-placeholder-count="8"><option value="{{ o.code }}">{{ o.label }}</option></sc-for>
+</select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="mq" style="font-weight: 700; font-size: 14px">Cantidad *</label>
+<input id="mq" type="number" min="1" value="{{ mQty }}" onChange="{{ setQty }}" style="min-height: 46px; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 15px; color: #0F172A; border: 1.5px solid {{ qtyBorder }}">
+<sc-if value="{{ qtyErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #B91C1C">{{ qtyErr }}</span></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="mm" style="font-weight: 700; font-size: 14px">Motivo *</label>
+<select id="mm" value="{{ mReason }}" onChange="{{ setReason }}" style="min-height: 46px; border-radius: 10px; padding: 0 10px; font: inherit; font-size: 14px; background: #FFFFFF; color: #0F172A; border: 1.5px solid {{ reasonBorder }}">
+<option value="">Selecciona el motivo</option>
+<sc-for list="{{ reasons }}" as="r" hint-placeholder-count="4"><option value="{{ r }}">{{ r }}</option></sc-for>
+</select>
+<sc-if value="{{ reasonErr }}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; font-weight: 600; color: #B91C1C">Selecciona el motivo del movimiento</span></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="mo" style="font-weight: 700; font-size: 14px">Observación</label>
+<textarea id="mo" rows="2" placeholder="Ej.: factura de proveedor 2231" style="border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; color: #0F172A; border: 1.5px solid #CBD5E1; resize: vertical"></textarea>
+</div>
+<sc-if value="{{ mErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="background: #FEE2E2; color: #991B1B; border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 700">{{ mErr }}</div></sc-if>
+<button type="button" onClick="{{ register }}" style="min-height: 48px; border-radius: 10px; border: 0; background: #2563EB; color: #FFFFFF; font: inherit; font-weight: 800; font-size: 15px; cursor: pointer">Registrar {{ typeWord }}</button>
+<p style="margin: 0; font-size: 13px; color: #475569">Prueba una salida de 10 unidades del Monitor 24" (hay 8) para ver el error de existencia.</p>
+</form>
+
+<section style="flex: 3 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 18px; font-weight: 800">Historial de movimientos</h2>
+<div role="group" aria-label="Filtrar por tipo" style="display: flex; gap: 6px">
+<sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}" style="min-height: 38px; padding: 0 14px; border-radius: 999px; font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; border: 1.5px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.color }}">{{ f.name }}</button>
+</sc-for>
+</div>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px">
+<thead><tr style="text-align: left; color: #475569"><th scope="col" style="padding: 10px 6px">Fecha</th><th scope="col" style="padding: 10px 6px">Tipo</th><th scope="col" style="padding: 10px 6px">Producto</th><th scope="col" style="padding: 10px 6px; text-align: right">Cant.</th><th scope="col" style="padding: 10px 6px">Motivo y usuario</th></tr></thead>
+<tbody>
+<sc-for list="{{ hist }}" as="h" hint-placeholder-count="8">
+<tr style="border-top: 1px solid #E2E8F0"><td style="padding: 11px 6px; color: #334155; white-space: nowrap">{{ h.when }}</td>
+<td style="padding: 11px 6px"><span style="padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; background: {{ h.bg }}; color: {{ h.color }}">{{ h.type }}</span></td>
+<td style="padding: 11px 6px; font-weight: 700">{{ h.name }}</td><td style="padding: 11px 6px; text-align: right; font-weight: 800">{{ h.qty }}</td><td style="padding: 11px 6px"><div>{{ h.reason }}</div><div style="font-size: 12px; color: #475569">{{ h.who }}</div></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; top: 24px; right: 24px; z-index: 10; background: #047857; color: #FFFFFF; padding: 14px 18px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px rgba(15,23,42,0.2)">{{ toastText }}</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1040}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mType: 'in', mProd: 'MON-001', mQty: '', mReason: '', qtyErr: '', reasonErr: false, mErr: '', filter: 'Todos', toast: false, toastText: '',
+      items: [['LAP-001', 'Laptop 14" 16GB RAM', 9], ['CEL-001', 'Smartphone 128GB', 14], ['MON-001', 'Monitor 24" Full HD', 8], ['ACC-001', 'Audífonos Bluetooth', 29], ['ACC-002', 'Mouse inalámbrico', 47], ['ACC-003', 'Teclado mecánico', 24], ['ACC-004', 'Funda para celular', 38], ['ACC-006', 'Base refrigerante para portátil', 0]],
+      hist: [
+        ['25/10 20:06', 'Salida', 'Audífonos Bluetooth', 1, 'Venta PED-0004', 'Sistema'],
+        ['22/10 15:30', 'Entrada', 'Monitor 24" Full HD', 1, 'Restitución por cancelación PED-0005', 'Sofía Vendedora'],
+        ['22/10 11:01', 'Salida', 'Monitor 24" Full HD', 1, 'Venta PED-0005', 'Sistema'],
+        ['20/10 09:31', 'Salida', 'Smartphone 128GB', 1, 'Venta PED-0003', 'Sistema'],
+        ['07/10 16:41', 'Salida', 'Teclado mecánico', 1, 'Venta PED-0002', 'Sistema'],
+        ['05/10 10:16', 'Salida', 'Laptop 14" 16GB RAM', 1, 'Venta PED-0001', 'Sistema'],
+        ['01/10 08:30', 'Entrada', 'Monitor 24" Full HD', 8, 'Compra a proveedor', 'Mario Inventario'],
+        ['01/10 08:00', 'Entrada', 'Laptop 14" 16GB RAM', 10, 'Compra a proveedor', 'Mario Inventario']
+      ] };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  renderVals() {
+    var self = this, s = this.state, isIn = s.mType === 'in';
+    var reasons = isIn ? ['Compra a proveedor', 'Devolución de cliente', 'Ajuste por conteo físico'] : ['Producto dañado o defectuoso', 'Garantía / devolución a proveedor', 'Ajuste por conteo físico'];
+    var filters = ['Todos', 'Entrada', 'Salida'].map(function (f) {
+      var on = s.filter === f;
+      return { name: f, on: on, bg: on ? '#0F172A' : '#FFFFFF', color: on ? '#FFFFFF' : '#0F172A', border: on ? '#0F172A' : '#CBD5E1', pick: function () { self.setState({ filter: f }); } };
+    });
+    return {
+      crumbs: [{ label: 'Inicio', href: 'Inventario.dc.html' }, { label: 'Inventario', href: 'Inventario.dc.html' }, { label: 'Movimientos' }],
+      isIn: isIn, isOut: !isIn, typeWord: isIn ? 'entrada' : 'salida',
+      inBg: isIn ? '#FFFFFF' : 'transparent', outBg: isIn ? 'transparent' : '#FFFFFF',
+      inColor: isIn ? '#065F46' : '#475569', outColor: isIn ? '#475569' : '#1E40AF',
+      setIn: function () { self.setState({ mType: 'in', mReason: '', mErr: '' }); },
+      setOut: function () { self.setState({ mType: 'out', mReason: '', mErr: '' }); },
+      options: s.items.map(function (i) { return { code: i[0], label: i[1] + ' (' + i[2] + ' und.)' }; }),
+      reasons: reasons, filters: filters,
+      mProd: s.mProd, mQty: s.mQty, mReason: s.mReason, qtyErr: s.qtyErr, reasonErr: s.reasonErr, mErr: s.mErr,
+      qtyBorder: s.qtyErr ? '#B91C1C' : '#CBD5E1', reasonBorder: s.reasonErr ? '#B91C1C' : '#CBD5E1',
+      setProd: function (e) { self.setState({ mProd: e.target.value, mErr: '' }); },
+      setQty: function (e) { self.setState({ mQty: e.target.value, qtyErr: '', mErr: '' }); },
+      setReason: function (e) { self.setState({ mReason: e.target.value, reasonErr: false }); },
+      hist: s.hist.filter(function (h) { return s.filter === 'Todos' || h[1] === s.filter; }).map(function (h) {
+        return { when: h[0], type: h[1], name: h[2], qty: (h[1] === 'Entrada' ? '+' : '−') + h[3], reason: h[4], who: h[5],
+          bg: h[1] === 'Entrada' ? '#D1FAE5' : '#DBEAFE', color: h[1] === 'Entrada' ? '#065F46' : '#1E40AF' };
+      }),
+      register: function () {
+        var n = parseInt(s.mQty, 10);
+        var item = s.items.filter(function (i) { return i[0] === s.mProd; })[0];
+        var qe = n > 0 ? '' : 'Ingresa una cantidad mayor que 0', re = !s.mReason;
+        if (qe || re) { self.setState({ qtyErr: qe, reasonErr: re }); return; }
+        if (!isIn && n > item[2]) { self.setState({ mErr: 'Existencia insuficiente: hay ' + item[2] + ' unidades de ' + item[1] + '.' }); return; }
+        var items = s.items.map(function (i) { return i[0] === item[0] ? [i[0], i[1], i[2] + (isIn ? n : -n)] : i; });
+        var hist = [['09/11 ahora', isIn ? 'Entrada' : 'Salida', item[1], n, s.mReason, 'Mario Inventario']].concat(s.hist);
+        clearTimeout(self.t);
+        self.setState({ items: items, hist: hist, mQty: '', mReason: '', toast: true, toastText: (isIn ? 'Entrada' : 'Salida') + ' registrada: ' + n + ' und. de ' + item[1] });
+        self.t = setTimeout(function () { self.setState({ toast: false }); }, 2600);
+      },
+      toast: s.toast, toastText: s.toastText
+    };
+  }
+}
+</script>
+</body>
+</html>
