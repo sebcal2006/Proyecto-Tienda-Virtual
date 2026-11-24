@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Iniciar sesión')}"></head>
+<body class="auth">
+<main class="auth-card">
+    <a class="brand big" th:href="@{/catalogo}">Tienda<span>Virtual</span></a>
+    <h1>Iniciar sesión</h1>
+    <div class="alert error" th:if="${param.error}">Correo o contraseña incorrectos</div>
+    <div class="alert error" th:if="${param.inactiva}">La cuenta está inactiva. Comuníquese con el administrador</div>
+    <div class="alert ok" th:if="${param.registrado}">Cuenta creada. Ya puede iniciar sesión</div>
+    <div class="alert ok" th:if="${param.salida}">Sesión cerrada</div>
+    <form th:action="@{/login}" method="post" class="form">
+        <label>Correo electrónico
+            <input type="email" name="email" required autofocus placeholder="usuario@correo.com">
+        </label>
+        <label>Contraseña
+            <input type="password" name="password" required>
+        </label>
+        <button class="btn full">Ingresar</button>
+    </form>
+    <p class="muted center">¿No tiene cuenta? <a th:href="@{/registro}">Regístrese</a></p>
+    <details class="demo">
+        <summary>Cuentas de prueba</summary>
+        <ul>
+            <li><b>admin@tienda.com</b> · Tienda123 (administrador)</li>
+            <li><b>vendedor@tienda.com</b> · Tienda123 (vendedor)</li>
+            <li><b>laura.gomez@correo.com</b> · Cliente123 (cliente)</li>
+            <li><b>inactivo@tienda.com</b> · Tienda123 (cuenta inactiva)</li>
+        </ul>
+    </details>
+</main>
+</body>
+</html>

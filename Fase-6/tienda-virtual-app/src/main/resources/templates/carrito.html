@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Carrito')}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container narrow">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Carrito de compras</h1>
+    <div class="card" th:if="${cart.items.isEmpty()}">
+        <p class="empty">El carrito está vacío.</p>
+        <a class="btn" th:href="@{/catalogo}">Ir al catálogo</a>
+    </div>
+    <div class="card" th:unless="${cart.items.isEmpty()}">
+        <table>
+            <thead><tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th class="r">Subtotal</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="i : ${cart.items}">
+                <td><b th:text="${i.product.name}">Producto</b><br>
+                    <small class="muted" th:text="${i.product.stock} + ' disponibles'"></small></td>
+                <td th:text="${@fmt.money(i.product.price)}">$</td>
+                <td>
+                    <form th:action="@{/carrito/actualizar}" method="post" class="row" autocomplete="off">
+                        <input type="hidden" name="productId" th:value="${i.product.id}">
+                        <input type="number" name="quantity" th:value="${i.quantity}" min="0" th:max="${i.product.stock}"
+                               class="qty" autocomplete="off" onchange="this.form.submit()">
+                        <button class="btn btn-small ghost">Actualizar</button>
+                    </form>
+                </td>
+                <td class="r" th:text="${@fmt.money(i.subtotal)}">$</td>
+                <td>
+                    <form th:action="@{/carrito/quitar}" method="post">
+                        <input type="hidden" name="productId" th:value="${i.product.id}">
+                        <button class="link danger">Quitar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot><tr><td colspan="3" class="r"><b>Total</b></td>
+                <td class="r total" th:text="${@fmt.money(cart.total)}">$</td><td></td></tr></tfoot>
+        </table>
+        <div class="actions">
+            <a class="btn ghost" th:href="@{/catalogo}">Seguir comprando</a>
+            <a class="btn" th:href="@{/checkout}">Continuar con la compra</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

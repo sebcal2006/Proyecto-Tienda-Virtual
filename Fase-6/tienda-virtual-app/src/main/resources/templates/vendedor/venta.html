@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Venta presencial')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('venta')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Venta presencial o telefónica</h1>
+
+    <div class="two-col">
+        <section>
+            <div class="card">
+                <h2>1. Cliente</h2>
+                <div th:if="${customer}" class="selected">
+                    <b th:text="${customer.name}"></b>
+                    <span class="muted" th:text="${customer.document != null ? 'Doc. ' + customer.document : customer.email}"></span>
+                </div>
+                <form th:action="@{/vendedor/venta/cliente/buscar}" method="post" class="row">
+                    <input name="document" placeholder="Documento del cliente" required>
+                    <button class="btn ghost">Buscar</button>
+                </form>
+                <details th:open="${newDocument != null}">
+                    <summary>Registrar cliente nuevo</summary>
+                    <form th:action="@{/vendedor/venta/cliente/nuevo}" method="post" class="form">
+                        <label>Documento *<input name="document" th:value="${newDocument}" required></label>
+                        <label>Nombre *<input name="name" required></label>
+                        <label>Teléfono<input name="phone"></label>
+                        <button class="btn">Registrar y seleccionar</button>
+                    </form>
+                </details>
+            </div>
+
+            <div class="card">
+                <h2>2. Productos</h2>
+                <form th:action="@{/vendedor/venta}" method="get" class="row">
+                    <input name="q" th:value="${q}" placeholder="Nombre o código del producto">
+                    <button class="btn ghost">Buscar</button>
+                </form>
+                <p class="empty" th:if="${q != null and results.isEmpty()}">Sin resultados.</p>
+                <table th:unless="${results.isEmpty()}">
+                    <tr th:each="p : ${results}">
+                        <td><b th:text="${p.name}"></b><br><small class="muted" th:text="${p.code}"></small></td>
+                        <td th:text="${@fmt.money(p.price)}"></td>
+                        <td><span class="stock" th:classappend="${!p.available} ? 'out' : (${p.lowStock} ? 'low' : '')"
+                                  th:text="${p.available} ? (${p.stock} + ' disp.') : 'Agotado'"></span></td>
+                        <td>
+                            <form th:action="@{/vendedor/venta/agregar}" method="post" class="row">
+                                <input type="hidden" name="productId" th:value="${p.id}">
+                                <input type="hidden" name="q" th:value="${q}">
+                                <input type="number" name="quantity" value="1" min="1" class="qty">
+                                <button class="btn btn-small" th:disabled="${!p.available}">Agregar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>3. Resumen de la venta</h2>
+            <p class="empty" th:if="${lines.isEmpty()}">Aún no hay productos en la venta.</p>
+            <table th:unless="${lines.isEmpty()}">
+                <tr th:each="l : ${lines}">
+                    <td th:text="${l.product.name}"></td>
+                    <td>
+                        <form th:action="@{/vendedor/venta/cantidad}" method="post" class="row" autocomplete="off">
+                            <input type="hidden" name="productId" th:value="${l.product.id}">
+                            <input type="number" name="quantity" th:value="${l.quantity}" min="0" class="qty"
+                                   onchange="this.form.submit()">
+                        </form>
+                    </td>
+                    <td class="r" th:text="${@fmt.money(l.subtotal)}"></td>
+                    <td>
+                        <form th:action="@{/vendedor/venta/quitar}" method="post">
+                            <input type="hidden" name="productId" th:value="${l.product.id}">
+                            <button class="link danger">Quitar</button>
+                        </form>
+                    </td>
+                </tr>
+                <tfoot><tr><td colspan="2" class="r"><b>Total</b></td>
+                    <td class="r total" th:text="${@fmt.money(total)}"></td><td></td></tr></tfoot>
+            </table>
+            <form th:action="@{/vendedor/venta/confirmar}" method="post">
+                <button class="btn full" th:disabled="${customer == null or lines.isEmpty()}">Confirmar venta</button>
+            </form>
+            <form th:action="@{/vendedor/venta/descartar}" method="post" th:unless="${lines.isEmpty() and customer == null}">
+                <button class="btn ghost full">Descartar</button>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+</html>

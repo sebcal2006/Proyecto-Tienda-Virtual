@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · Tienda Virtual'">Tienda Virtual</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<!-- Barra superior del cliente y visitantes -->
+<header th:fragment="clientNav" class="topbar">
+    <a class="brand" th:href="@{/catalogo}">Tienda<span>Virtual</span></a>
+    <nav>
+        <a th:href="@{/catalogo}">Catálogo</a>
+        <th:block sec:authorize="hasRole('CUSTOMER')">
+            <a th:href="@{/mis-pedidos}">Mis pedidos</a>
+            <a class="cart-link" th:href="@{/carrito}">Carrito <span class="pill" th:text="${cartUnits}">0</span></a>
+        </th:block>
+        <th:block sec:authorize="hasAnyRole('ADMIN','SELLER')">
+            <a th:href="@{/gestion/pedidos}">Gestión</a>
+        </th:block>
+        <th:block sec:authorize="isAuthenticated()">
+            <span class="who" th:text="${userName}">Usuario</span>
+            <form th:action="@{/logout}" method="post" class="inline"><button class="link">Salir</button></form>
+        </th:block>
+        <th:block sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Iniciar sesión</a>
+            <a class="btn btn-small" th:href="@{/registro}">Crear cuenta</a>
+        </th:block>
+    </nav>
+</header>
+
+<!-- Barra lateral del personal de la tienda -->
+<aside th:fragment="staffNav(active)" class="sidebar">
+    <a class="brand" th:href="@{/gestion/pedidos}">Tienda<span>Virtual</span></a>
+    <p class="who" th:text="${userName}">Usuario</p>
+    <nav>
+        <a sec:authorize="hasRole('SELLER')" th:href="@{/vendedor/venta}"
+           th:classappend="${active == 'venta'} ? 'active'">Venta presencial</a>
+        <a th:href="@{/gestion/pedidos}" th:classappend="${active == 'pedidos'} ? 'active'">Pedidos</a>
+        <a th:href="@{/catalogo}">Ver catálogo</a>
+    </nav>
+    <form th:action="@{/logout}" method="post"><button class="link light">Cerrar sesión</button></form>
+</aside>
+
+<!-- Mensajes de éxito o error -->
+<div th:fragment="flash">
+    <div class="alert ok" th:if="${ok}" th:text="${ok}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+</body>
+</html>

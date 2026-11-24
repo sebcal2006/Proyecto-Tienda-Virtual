@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${order.code})}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('pedidos')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <a class="back" th:href="@{/gestion/pedidos}">← Pedidos</a>
+    <h1>Pedido <span th:text="${order.code}"></span>
+        <span class="badge" th:classappend="${order.status.css}" th:text="${order.status.label}"></span></h1>
+
+    <div class="two-col">
+        <section class="card">
+            <h2>Productos</h2>
+            <table>
+                <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th class="r">Subtotal</th></tr></thead>
+                <tbody>
+                <tr th:each="i : ${order.items}">
+                    <td th:text="${i.product.code} + ' · ' + ${i.product.name}"></td>
+                    <td th:text="${i.quantity}"></td>
+                    <td th:text="${@fmt.money(i.unitPrice)}"></td>
+                    <td class="r" th:text="${@fmt.money(i.subtotal)}"></td>
+                </tr>
+                </tbody>
+                <tfoot><tr><td colspan="3" class="r"><b>Total</b></td>
+                    <td class="r total" th:text="${@fmt.money(order.total)}"></td></tr></tfoot>
+            </table>
+
+            <h2>Historial de estados</h2>
+            <ul class="timeline">
+                <li th:each="h : ${order.history}">
+                    <span class="badge" th:classappend="${h.status.css}" th:text="${h.status.label}"></span>
+                    <small class="muted" th:text="${#temporals.format(h.changedAt, 'dd/MM/yyyy HH:mm')}
+                        + (${h.changedBy} != null ? ' · ' + ${h.changedBy.name} : ' · Cliente (en línea)')"></small>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <div class="card">
+                <h2>Datos</h2>
+                <dl>
+                    <dt>Cliente</dt><dd th:text="${order.customer.name}"></dd>
+                    <dt th:if="${order.customer.document}">Documento</dt><dd th:if="${order.customer.document}" th:text="${order.customer.document}"></dd>
+                    <dt>Canal</dt><dd th:text="${order.channel.label}"></dd>
+                    <dt th:if="${order.seller}">Vendedor</dt><dd th:if="${order.seller}" th:text="${order.seller.name}"></dd>
+                    <dt th:if="${order.deliveryAddress}">Entrega</dt>
+                    <dd th:if="${order.deliveryAddress}" th:text="${order.deliveryAddress.address} + ', ' + ${order.deliveryAddress.city}
+                        + (${order.deliveryAddress.reference} != null ? ' (' + ${order.deliveryAddress.reference} + ')' : '')"></dd>
+                    <dt>Fecha</dt><dd th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></dd>
+                </dl>
+            </div>
+            <div class="card" th:unless="${order.payments.isEmpty()}">
+                <h2>Pagos</h2>
+                <ul class="timeline">
+                    <li th:each="p : ${order.payments}">
+                        <span class="badge" th:classappend="${p.status.css}" th:text="${p.status.label}"></span>
+                        <span th:text="${p.method.name}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card" sec:authorize="hasRole('SELLER')"
+                 th:if="${order.status.next() != null or order.status.canBeCancelled()}">
+                <h2>Acciones</h2>
+                <form th:if="${order.status.next() != null}" th:action="@{/gestion/pedidos/{id}/avanzar(id=${order.id})}" method="post">
+                    <button class="btn full" th:text="'Pasar a ' + ${order.status.next().label}">Avanzar</button>
+                </form>
+                <form th:if="${order.status.canBeCancelled()}" th:action="@{/gestion/pedidos/{id}/cancelar(id=${order.id})}" method="post"
+                      onsubmit="return confirm('¿Cancelar el pedido? Las unidades vuelven al inventario.');">
+                    <button class="btn danger full">Cancelar pedido</button>
+                </form>
+            </div>
+            <p class="muted" sec:authorize="!hasRole('SELLER')">Consulta de solo lectura (administrador).</p>
+        </section>
+    </div>
+</main>
+</body>
+</html>

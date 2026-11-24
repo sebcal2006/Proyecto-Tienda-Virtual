@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Confirmar compra')}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Confirmar compra</h1>
+    <form th:action="@{/checkout}" method="post" class="two-col">
+        <section class="card form">
+            <h2>Dirección de entrega</h2>
+            <label>Dirección *<input name="address" th:value="${address}" required placeholder="Calle 10 # 5-20"></label>
+            <label>Ciudad *<input name="city" th:value="${city}" required placeholder="Bogotá"></label>
+            <label>Referencia<input name="reference" th:value="${reference}" placeholder="Apto 301, portería"></label>
+
+            <h2>Método de pago</h2>
+            <label class="radio" th:each="m, st : ${methods}">
+                <input type="radio" name="paymentMethodId" th:value="${m.id}" th:checked="${st.first}">
+                <span th:text="${m.name}">Método</span>
+            </label>
+            <label class="check">
+                <input type="checkbox" name="simulateRejection" value="true">
+                Simular pago rechazado (pasarela de prueba)
+            </label>
+        </section>
+        <section class="card">
+            <h2>Resumen</h2>
+            <table>
+                <tr th:each="i : ${cart.items}">
+                    <td th:text="${i.quantity} + ' × ' + ${i.product.name}"></td>
+                    <td class="r" th:text="${@fmt.money(i.subtotal)}"></td>
+                </tr>
+                <tfoot><tr><td><b>Total</b></td><td class="r total" th:text="${@fmt.money(cart.total)}"></td></tr></tfoot>
+            </table>
+            <button class="btn full">Confirmar y pagar</button>
+            <a class="btn ghost full" th:href="@{/carrito}">Volver al carrito</a>
+        </section>
+    </form>
+</main>
+</body>
+</html>

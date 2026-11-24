@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Mis pedidos')}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container narrow">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Mis pedidos</h1>
+    <div class="card" th:if="${orders.isEmpty()}">
+        <p class="empty">Aún no tiene pedidos.</p>
+        <a class="btn" th:href="@{/catalogo}">Ir al catálogo</a>
+    </div>
+    <div class="card" th:unless="${orders.isEmpty()}">
+        <table>
+            <thead><tr><th>Pedido</th><th>Fecha</th><th>Canal</th><th>Estado</th><th class="r">Total</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="o : ${orders}">
+                <td><b th:text="${o.code}">PED</b></td>
+                <td th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${o.channel.label}"></td>
+                <td><span class="badge" th:classappend="${o.status.css}" th:text="${o.status.label}"></span>
+                    <span class="badge badge-red" th:if="${o.awaitingPayment}">Pago pendiente</span></td>
+                <td class="r" th:text="${@fmt.money(o.total)}"></td>
+                <td><a th:href="@{/mis-pedidos/{id}(id=${o.id})}">Ver</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

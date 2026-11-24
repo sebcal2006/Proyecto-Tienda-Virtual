@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Panel')}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container narrow">
+    <div class="card">
+        <h1>Bienvenido, <span th:text="${userName}"></span></h1>
+        <p>Los módulos de su rol (inventario, facturación o domicilios) se entregan en el siguiente avance del proyecto.</p>
+        <a class="btn" th:href="@{/catalogo}">Ver catálogo</a>
+    </div>
+</main>
+</body>
+</html>
