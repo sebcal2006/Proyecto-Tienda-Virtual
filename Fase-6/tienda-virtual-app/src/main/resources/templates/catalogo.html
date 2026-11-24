@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Catálogo')}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Catálogo de productos</h1>
+    <form class="filters" th:action="@{/catalogo}" method="get">
+        <input name="q" th:value="${q}" placeholder="Buscar por nombre o código">
+        <select name="categoria">
+            <option value="">Todas las categorías</option>
+            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                    th:selected="${c.id == categoria}"></option>
+        </select>
+        <button class="btn">Buscar</button>
+        <a class="btn ghost" th:href="@{/catalogo}" th:if="${q != null or categoria != null}">Limpiar</a>
+    </form>
+
+    <p class="empty" th:if="${products.isEmpty()}">No se encontraron productos con ese criterio.</p>
+
+    <div class="grid">
+        <article class="card product" th:each="p : ${products}">
+            <a th:href="@{/catalogo/{id}(id=${p.id})}" class="thumb" th:text="${#strings.substring(p.name,0,1)}">P</a>
+            <span class="cat" th:text="${p.category.name}">Categoría</span>
+            <h3><a th:href="@{/catalogo/{id}(id=${p.id})}" th:text="${p.name}">Producto</a></h3>
+            <p class="price" th:text="${@fmt.money(p.price)}">$ 0</p>
+            <p class="stock" th:classappend="${!p.available} ? 'out' : (${p.lowStock} ? 'low' : '')"
+               th:text="${p.available} ? (${p.stock} + ' disponibles') : 'Agotado'">10 disponibles</p>
+            <form th:action="@{/carrito/agregar}" method="post" sec:authorize="hasRole('CUSTOMER')">
+                <input type="hidden" name="productId" th:value="${p.id}">
+                <input type="hidden" name="back" th:value="${'/catalogo' + (q != null ? '?q=' + q : '')}">
+                <button class="btn full" th:disabled="${!p.available}">Agregar al carrito</button>
+            </form>
+            <a sec:authorize="!isAuthenticated()" class="btn ghost full" th:href="@{/login}">Inicie sesión para comprar</a>
+        </article>
+    </div>
+</main>
+</body>
+</html>

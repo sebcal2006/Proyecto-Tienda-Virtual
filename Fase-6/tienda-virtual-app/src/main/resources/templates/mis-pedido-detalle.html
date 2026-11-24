@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${order.code})}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container narrow">
+    <div th:replace="~{fragments :: flash}"></div>
+    <a class="back" th:href="@{/mis-pedidos}">← Mis pedidos</a>
+    <h1>Pedido <span th:text="${order.code}"></span>
+        <span class="badge" th:classappend="${order.status.css}" th:text="${order.status.label}"></span></h1>
+
+    <div class="card" th:if="${order.status.name() == 'CANCELLED'}">
+        <p>Este pedido fue cancelado.</p>
+    </div>
+    <ol class="tracker" th:unless="${order.status.name() == 'CANCELLED'}">
+        <li th:each="s : ${steps}" th:classappend="${s.step() <= order.status.step()} ? 'done'" th:text="${s.label}"></li>
+    </ol>
+
+    <div class="card warn" th:if="${order.awaitingPayment}">
+        <h2>Pago rechazado</h2>
+        <p>El pedido no avanzará hasta que el pago sea aprobado.</p>
+        <form th:action="@{/mis-pedidos/{id}/pagar(id=${order.id})}" method="post" class="row wrap">
+            <select name="paymentMethodId">
+                <option th:each="m : ${methods}" th:value="${m.id}" th:text="${m.name}"></option>
+            </select>
+            <label class="check"><input type="checkbox" name="simulateRejection" value="true"> Simular rechazo</label>
+            <button class="btn">Reintentar pago</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th class="r">Subtotal</th></tr></thead>
+            <tbody>
+            <tr th:each="i : ${order.items}">
+                <td th:text="${i.product.name}"></td>
+                <td th:text="${i.quantity}"></td>
+                <td th:text="${@fmt.money(i.unitPrice)}"></td>
+                <td class="r" th:text="${@fmt.money(i.subtotal)}"></td>
+            </tr>
+            </tbody>
+            <tfoot><tr><td colspan="3" class="r"><b>Total</b></td>
+                <td class="r total" th:text="${@fmt.money(order.total)}"></td></tr></tfoot>
+        </table>
+        <p class="muted" th:unless="${order.payments.isEmpty()}">
+            Pago: <span class="badge" th:with="p=${order.payments[order.payments.size() - 1]}"
+                        th:classappend="${p.status.css}" th:text="${p.status.label} + ' · ' + ${p.method.name}"></span>
+        </p>
+        <p class="muted" th:if="${order.deliveryAddress}">
+            Entrega en <span th:text="${order.deliveryAddress.address} + ', ' + ${order.deliveryAddress.city}"></span>
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Historial</h2>
+        <ul class="timeline">
+            <li th:each="h : ${order.history}">
+                <span class="badge" th:classappend="${h.status.css}" th:text="${h.status.label}"></span>
+                <small class="muted" th:text="${#temporals.format(h.changedAt, 'dd/MM/yyyy HH:mm')}"></small>
+            </li>
+        </ul>
+    </div>
+</main>
+</body>
+</html>

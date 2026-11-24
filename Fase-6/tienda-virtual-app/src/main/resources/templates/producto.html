@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${product.name})}"></head>
+<body>
+<header th:replace="~{fragments :: clientNav}"></header>
+<main class="container">
+    <div th:replace="~{fragments :: flash}"></div>
+    <a class="back" th:href="@{/catalogo}">← Volver al catálogo</a>
+    <div class="detail">
+        <div class="thumb big" th:text="${#strings.substring(product.name,0,1)}">P</div>
+        <div>
+            <span class="cat" th:text="${product.category.name}">Categoría</span>
+            <h1 th:text="${product.name}">Producto</h1>
+            <p class="muted" th:text="'Código ' + ${product.code}">Código</p>
+            <p class="price big" th:text="${@fmt.money(product.price)}">$ 0</p>
+            <p th:text="${product.description}">Descripción</p>
+            <p class="stock" th:classappend="${!product.available} ? 'out' : (${product.lowStock} ? 'low' : '')"
+               th:text="${product.available} ? (${product.stock} + ' unidades disponibles') : 'Agotado'"></p>
+            <form th:action="@{/carrito/agregar}" method="post" class="row" sec:authorize="hasRole('CUSTOMER')">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <input type="hidden" name="back" th:value="${'/catalogo/' + product.id}">
+                <input type="number" name="quantity" value="1" min="1" th:max="${product.stock}" class="qty">
+                <button class="btn" th:disabled="${!product.available}">Agregar al carrito</button>
+            </form>
+            <a sec:authorize="!isAuthenticated()" class="btn" th:href="@{/login}">Inicie sesión para comprar</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
