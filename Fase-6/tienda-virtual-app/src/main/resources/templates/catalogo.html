@@ -17,7 +17,8 @@
         <a class="btn ghost" th:href="@{/catalogo}" th:if="${q != null or categoria != null}">Limpiar</a>
     </form>
 
-    <p class="empty" th:if="${products.isEmpty()}">No se encontraron productos con ese criterio.</p>
+    <p class="empty" th:if="${products.isEmpty() and (q != null or categoria != null)}">No se encontraron productos con ese criterio.</p>
+    <p class="empty" th:if="${products.isEmpty() and q == null and categoria == null}">No hay productos disponibles en este momento.</p>
 
     <div class="grid">
         <article class="card product" th:each="p : ${products}">

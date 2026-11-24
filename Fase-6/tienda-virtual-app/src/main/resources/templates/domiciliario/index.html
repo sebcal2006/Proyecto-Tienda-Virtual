@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Mis entregas')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('entregas')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Mis entregas</h1>
+    <p class="empty card" th:if="${active.isEmpty()}">Sin entregas pendientes.</p>
+    <div class="grid wide">
+        <article class="card" th:each="d : ${active}">
+            <div class="title-row">
+                <h2 th:text="${d.order.code}">PED</h2>
+                <span class="badge" th:classappend="${d.status.css}" th:text="${d.status.label}"></span>
+            </div>
+            <dl>
+                <dt>Cliente</dt><dd th:text="${d.order.customer.name}"></dd>
+                <dt>Teléfono</dt><dd th:text="${d.order.customer.phone ?: '—'}"></dd>
+                <dt>Dirección</dt><dd th:text="${d.order.deliveryAddress.address} + ', ' + ${d.order.deliveryAddress.city}"></dd>
+                <dt th:if="${d.order.deliveryAddress.reference}">Referencia</dt>
+                <dd th:if="${d.order.deliveryAddress.reference}" th:text="${d.order.deliveryAddress.reference}"></dd>
+                <dt>Productos</dt><dd th:text="${d.order.units} + ' unidades · ' + ${@fmt.money(d.order.total)}"></dd>
+                <dt>Asignado</dt><dd th:text="${#temporals.format(d.assignedAt, 'dd/MM/yyyy HH:mm')}"></dd>
+            </dl>
+            <div class="alert error" th:if="${d.incident}" th:text="'Incidencia: ' + ${d.incident}"></div>
+            <form th:if="${d.status.name() == 'ASSIGNED'}" th:action="@{/domiciliario/{id}/en-camino(id=${d.id})}" method="post">
+                <button class="btn full">Salí a entregar (en camino)</button>
+            </form>
+            <th:block th:if="${d.status.name() == 'ON_THE_WAY'}">
+                <form th:action="@{/domiciliario/{id}/entregado(id=${d.id})}" method="post">
+                    <button class="btn full">Confirmar entrega</button>
+                </form>
+                <details>
+                    <summary>El cliente no recibió el pedido</summary>
+                    <form th:action="@{/domiciliario/{id}/incidencia(id=${d.id})}" method="post" class="form">
+                        <input name="incident" placeholder="Ej.: nadie atendió en la dirección" required>
+                        <button class="btn danger">Registrar incidencia</button>
+                    </form>
+                </details>
+            </th:block>
+        </article>
+    </div>
+    <div class="card" th:unless="${done.isEmpty()}">
+        <h2>Entregados</h2>
+        <table>
+            <tr th:each="d : ${done}">
+                <td><b th:text="${d.order.code}"></b></td>
+                <td th:text="${d.order.customer.name}"></td>
+                <td th:text="${d.order.deliveryAddress.city}"></td>
+                <td th:text="${#temporals.format(d.deliveredAt, 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+        </table>
+    </div>
+</main>
+</body>
+</html>

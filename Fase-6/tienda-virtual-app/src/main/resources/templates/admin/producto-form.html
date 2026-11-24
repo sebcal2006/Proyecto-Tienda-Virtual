@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${product == null} ? 'Nuevo producto' : 'Editar producto')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('productos')}"></aside>
+<main class="content">
+    <a class="back" th:href="@{/admin/productos}">← Productos</a>
+    <h1 th:text="${product == null} ? 'Nuevo producto' : 'Editar ' + ${product.name}">Producto</h1>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+    <form method="post" class="card form narrow-form"
+          th:action="${product == null} ? @{/admin/productos/nuevo} : @{/admin/productos/{id}(id=${product.id})}">
+        <label>Código *
+            <input name="code" th:value="${form.code()}" th:disabled="${product != null}" placeholder="ACC-010">
+            <small class="muted" th:if="${product != null}">El código no se cambia porque identifica al producto en ventas y facturas.</small>
+        </label>
+        <label>Nombre *<input name="name" th:value="${form.name()}"></label>
+        <label>Descripción<input name="description" th:value="${form.description()}"></label>
+        <label>Precio (COP) *<input type="number" name="price" step="0.01" th:value="${form.price()}"></label>
+        <label>Categoría *
+            <select name="categoryId">
+                <option value="">Seleccione…</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                        th:selected="${c.id == form.categoryId()}"></option>
+            </select>
+        </label>
+        <p class="muted" th:if="${product == null}">El producto se crea con existencia 0. Las unidades se cargan desde Inventario con una entrada.</p>
+        <p class="muted" th:if="${product != null}" th:text="'Existencia actual: ' + ${product.stock} + ' unidades'"></p>
+        <button class="btn" th:text="${product == null} ? 'Crear producto' : 'Guardar cambios'">Guardar</button>
+    </form>
+</main>
+</body>
+</html>

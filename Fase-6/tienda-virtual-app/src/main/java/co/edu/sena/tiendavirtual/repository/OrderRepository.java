@@ -23,4 +23,15 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             order by o.createdAt desc
             """)
     List<Order> search(@Param("status") OrderStatus status, @Param("channel") SalesChannel channel);
+
+    /** RF-041: pedidos no cancelados que todavía no tienen factura. */
+    @Query("""
+            select o from SalesOrder o
+            where o.status <> co.edu.sena.tiendavirtual.entity.OrderStatus.CANCELLED
+              and not exists (select i from Invoice i where i.order = o)
+            order by o.createdAt desc
+            """)
+    List<Order> findWithoutInvoice();
+
+    long countByStatus(OrderStatus status);
 }

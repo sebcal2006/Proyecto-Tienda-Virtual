@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Usuarios')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('usuarios')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <div class="title-row">
+        <h1>Usuarios y roles</h1>
+        <a class="btn" th:href="@{/admin/usuarios/nuevo}">Nuevo usuario</a>
+    </div>
+    <div class="card">
+        <table>
+            <thead><tr><th>Nombre</th><th>Correo</th><th>Roles</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td><b th:text="${u.name}"></b></td>
+                <td th:text="${u.email}"></td>
+                <td><span class="badge badge-blue" th:each="r : ${u.roles}" th:text="${r.label}"></span></td>
+                <td><span class="badge" th:classappend="${u.active} ? 'badge-green' : 'badge-red'"
+                          th:text="${u.active} ? 'Activo' : 'Inactivo'"></span></td>
+                <td><a th:href="@{/admin/usuarios/{id}(id=${u.id})}">Editar</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

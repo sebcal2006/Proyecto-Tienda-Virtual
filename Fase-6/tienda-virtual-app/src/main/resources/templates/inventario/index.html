@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Inventario')}"></head>
+<body class="staff">
+<aside th:replace="~{fragments :: staffNav('inventario')}"></aside>
+<main class="content">
+    <div th:replace="~{fragments :: flash}"></div>
+    <h1>Inventario</h1>
+    <form class="filters" th:action="@{/inventario}" method="get">
+        <input name="q" th:value="${q}" placeholder="Buscar por nombre o código">
+        <label class="check"><input type="checkbox" name="bajo" value="true" th:checked="${bajo}"> Solo existencia baja (≤ 10)</label>
+        <button class="btn">Filtrar</button>
+    </form>
+    <div class="card">
+        <p class="empty" th:if="${products.isEmpty()}">No hay productos con ese criterio.</p>
+        <table th:unless="${products.isEmpty()}">
+            <thead><tr><th>Producto</th><th>Código</th><th>Categoría</th><th class="r">Existencia</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="p : ${products}">
+                <td><b th:text="${p.name}"></b> <span class="badge badge-gray" th:unless="${p.active}">Inactivo</span></td>
+                <td th:text="${p.code}"></td>
+                <td th:text="${p.category.name}"></td>
+                <td class="r"><b th:text="${p.stock}"></b></td>
+                <td><span class="stock" th:classappend="${p.stock == 0} ? 'out' : (${p.stock <= 10} ? 'low' : '')"
+                          th:text="${p.stock == 0} ? 'Agotado' : (${p.stock <= 10} ? 'Reponer' : 'Suficiente')"></span></td>
+                <td><a th:href="@{/inventario/{id}(id=${p.id})}"
+                       sec:authorize="hasRole('INVENTORY_MANAGER')">Movimientos</a>
+                    <a th:href="@{/inventario/{id}(id=${p.id})}"
+                       sec:authorize="!hasRole('INVENTORY_MANAGER')">Historial</a></td>
+            </tr>
+            </tbody>
+            <tfoot><tr><td colspan="3" class="r"><b>Total de unidades</b></td><td class="r total" th:text="${units}"></td><td colspan="2"></td></tr></tfoot>
+        </table>
+    </div>
+    <div class="card">
+        <h2>Últimos movimientos</h2>
+        <table>
+            <tr th:each="m : ${latest}">
+                <td th:text="${#temporals.format(m.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${m.product.name}"></td>
+                <td><span class="badge" th:classappend="${m.type.name() == 'ENTRY'} ? 'badge-green' : 'badge-amber'"
+                          th:text="(${m.type.name() == 'ENTRY'} ? '+' : '-') + ${m.quantity}"></span></td>
+                <td th:text="${m.notes}"></td>
+                <td class="muted" th:text="${m.user.name}"></td>
+            </tr>
+        </table>
+    </div>
+</main>
+</body>
+</html>

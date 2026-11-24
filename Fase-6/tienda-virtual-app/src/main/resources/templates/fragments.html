@@ -17,8 +17,8 @@
             <a th:href="@{/mis-pedidos}">Mis pedidos</a>
             <a class="cart-link" th:href="@{/carrito}">Carrito <span class="pill" th:text="${cartUnits}">0</span></a>
         </th:block>
-        <th:block sec:authorize="hasAnyRole('ADMIN','SELLER')">
-            <a th:href="@{/gestion/pedidos}">Gestión</a>
+        <th:block sec:authorize="hasAnyRole('ADMIN','SELLER','INVENTORY_MANAGER','BILLING_MANAGER','COURIER')">
+            <a th:href="@{/panel}">Mi módulo</a>
         </th:block>
         <th:block sec:authorize="isAuthenticated()">
             <span class="who" th:text="${userName}">Usuario</span>
@@ -31,14 +31,34 @@
     </nav>
 </header>
 
-<!-- Barra lateral del personal de la tienda -->
+<!-- Barra lateral del personal de la tienda: cada rol ve solo sus módulos (RNF-002) -->
 <aside th:fragment="staffNav(active)" class="sidebar">
-    <a class="brand" th:href="@{/gestion/pedidos}">Tienda<span>Virtual</span></a>
+    <a class="brand" th:href="@{/}">Tienda<span>Virtual</span></a>
     <p class="who" th:text="${userName}">Usuario</p>
     <nav>
-        <a sec:authorize="hasRole('SELLER')" th:href="@{/vendedor/venta}"
-           th:classappend="${active == 'venta'} ? 'active'">Venta presencial</a>
-        <a th:href="@{/gestion/pedidos}" th:classappend="${active == 'pedidos'} ? 'active'">Pedidos</a>
+        <th:block sec:authorize="hasRole('ADMIN')">
+            <span class="group">Administración</span>
+            <a th:href="@{/admin}" th:classappend="${active == 'panel'} ? 'active'">Panel</a>
+            <a th:href="@{/admin/usuarios}" th:classappend="${active == 'usuarios'} ? 'active'">Usuarios y roles</a>
+            <a th:href="@{/admin/productos}" th:classappend="${active == 'productos'} ? 'active'">Productos</a>
+        </th:block>
+        <th:block sec:authorize="hasAnyRole('ADMIN','SELLER')">
+            <span class="group">Ventas</span>
+            <a sec:authorize="hasRole('SELLER')" th:href="@{/vendedor/venta}"
+               th:classappend="${active == 'venta'} ? 'active'">Venta presencial</a>
+            <a th:href="@{/gestion/pedidos}" th:classappend="${active == 'pedidos'} ? 'active'">Pedidos</a>
+        </th:block>
+        <th:block sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','BILLING_MANAGER')">
+            <span class="group">Operación</span>
+            <a sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')" th:href="@{/inventario}"
+               th:classappend="${active == 'inventario'} ? 'active'">Inventario</a>
+            <a sec:authorize="hasAnyRole('ADMIN','BILLING_MANAGER')" th:href="@{/facturacion}"
+               th:classappend="${active == 'facturacion'} ? 'active'">Facturación</a>
+        </th:block>
+        <th:block sec:authorize="hasRole('COURIER')">
+            <span class="group">Domicilios</span>
+            <a th:href="@{/domiciliario}" th:classappend="${active == 'entregas'} ? 'active'">Mis entregas</a>
+        </th:block>
         <a th:href="@{/catalogo}">Ver catálogo</a>
     </nav>
     <form th:action="@{/logout}" method="post"><button class="link light">Cerrar sesión</button></form>
